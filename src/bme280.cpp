@@ -155,30 +155,36 @@ double BME280::getCompensatedHumidity(int32_t adcInput)
     double var5;
     double var6;
 
-    printf("Humidiy compensation1 = 0x%02X\n", compensationData.humidity1);
-    printf("Humidiy compensation2 = 0x%04X [%d]\n", compensationData.humidity2, compensationData.humidity2);
-    printf("Humidiy compensation3 = 0x%02X\n", compensationData.humidity3);
-    printf("Humidiy compensation4 = 0x%04X [%d]\n", compensationData.humidity4, compensationData.humidity4);
-    printf("Humidiy compensation5 = 0x%04X [%d]\n", compensationData.humidity5, compensationData.humidity5);
-    printf("Humidiy compensation6 = 0x%02X [%d]\n", compensationData.humidity6, compensationData.humidity6);
+    printf("Humidity compensation1 = 0x%02X\n", compensationData.humidity1);
+    printf("Humidity compensation2 = 0x%04X [%d]\n", compensationData.humidity2, compensationData.humidity2);
+    printf("Humidity compensation3 = 0x%02X\n", compensationData.humidity3);
+    printf("Humidity compensation4 = 0x%04X [%d]\n", compensationData.humidity4, compensationData.humidity4);
+    printf("Humidity compensation5 = 0x%04X [%d]\n", compensationData.humidity5, compensationData.humidity5);
+    printf("Humidity compensation6 = 0x%02X [%d]\n", compensationData.humidity6, compensationData.humidity6);
 
     var1 = ((double)temperatureCalibration) - 76800.0;
+    printf("var1 = %.2f\n", var1);
 
     var2 = (((double)compensationData.humidity4) * 64.0 + (((double)compensationData.humidity5) / 16384.0) * var1);
+    printf("var2 = %.2f\n", var2);
 
     var3 = adcInput - var2;
+    printf("var3 = %.2f\n", var3);
 
     var4 = ((double)compensationData.humidity2) / 65536.0;
+    printf("var4 = %.2f\n", var4);
 
     var5 = (1.0 + (((double)compensationData.humidity3) / 67108864.0) * var1);
+    printf("var5 = %.2f\n", var5);
 
     var6 = 1.0 + (((double)compensationData.humidity6) / 67108864.0) * var1 * var5;
     var6 = var3 * var4 * (var5 * var6);
+    printf("var6 = %.2f\n", var6);
 
     humidity = var6 * (1.0 - ((double)compensationData.humidity1) * var6 / 524288.0);
 
-    printf("Humidy value = %.2f\n", humidity);
-    
+    printf("Humidity value = %.2f\n", humidity);
+
     if (humidity > humidity_max) {
         humidity = humidity_max;
     }
