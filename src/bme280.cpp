@@ -56,8 +56,8 @@ void BME280::readTPH(BME280_TPH * tph)
     bus.release(this->getName());
 
     printf("**** START COMPENSATION DATA ****\n");
-    for (int i = 0;i < sizeof(BME280_COMPENSATIONDATA);i++) {
-        printf("0x%02X", buf[i]);
+    for (uint32_t i = 0;i < sizeof(BME280_COMPENSATIONDATA);i++) {
+        printf("[%02X]", buf[i]);
     }
     printf("\n **** END COMPENSATION DATA ****\n\n");
 
