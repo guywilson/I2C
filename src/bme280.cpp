@@ -40,7 +40,7 @@ void BME280::readTPH(BME280_TPH * tph)
     printf("Got raw pressure value %u\n", pressure);
     printf("Got raw temperature value %u\n", temperature);
     printf("Got raw humidity value %u\n", humidity);
-    
+
     /*
     ** Read compensation data, part 1...
     */
@@ -54,6 +54,12 @@ void BME280::readTPH(BME280_TPH * tph)
     bus.acquire(this->getName());
     readBlock(0xE1, &buf[25], 8);
     bus.release(this->getName());
+
+    printf("**** START COMPENSATION DATA ****\n");
+    for (int i = 0;i < sizeof(BME280_COMPENSATIONDATA);i++) {
+        printf("0x%02X", buf[i]);
+    }
+    printf("\n **** END COMPENSATION DATA ****\n\n");
 
     memcpy(&compensationData, buf, sizeof(BME280_COMPENSATIONDATA));
 
