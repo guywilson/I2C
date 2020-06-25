@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 
@@ -36,6 +37,10 @@ void BME280::readTPH(BME280_TPH * tph)
     temperature = (buf[3] << 12) + (buf[4] << 4) + ((buf[5] >> 4) & 0x0F);
     humidity = (buf[6] << 8) + (buf[7]);
 
+    printf("Got raw pressure value %u\n", pressure);
+    printf("Got raw temperature value %u\n", temperature);
+    printf("Got raw humidity value %u\n", humidity);
+    
     /*
     ** Read compensation data, part 1...
     */
