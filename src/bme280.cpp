@@ -84,6 +84,8 @@ double BME280::getCompensatedTemperature(int32_t adcInput)
 
     temperatureCalibration = (int32_t)(var1 + var2);
 
+    printf("Temperature calibration = %u\n", temperatureCalibration);
+
     temperature = (var1 + var2) / 5120.0;
 
     if (temperature < temperature_min) {
