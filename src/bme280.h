@@ -45,6 +45,8 @@ private:
     BME280_COMPENSATIONDATA     compensationData;
     int32_t                     temperatureCalibration;
 
+    I2CBus & bus = I2CBus::getInstance();
+
     double getCompensatedTemperature(int32_t adcInput);
     double getCompensatedPressure(int32_t adcInput);
     double getCompensatedHumidity(int32_t adcInput);

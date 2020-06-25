@@ -21,8 +21,6 @@ void BME280::readTPH(BME280_TPH * tph)
     int32_t                     temperature;
     int32_t                     humidity;
 
-    I2CBus & bus = I2CBus::getInstance();
-
     /*
     ** Read raw temperature, pressure and humidity...
     */
