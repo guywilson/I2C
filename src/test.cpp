@@ -4,38 +4,29 @@
 #include <stdio.h>
 
 #include "i2c.h"
-#include "testdevice.h"
+#include "bme280.h"
 
 using namespace std;
 
-TestDevice::TestDevice() : I2CDevice("Temp Sensor", 0x75)
-{
-    I2CRegister tempValue("Temp Value", 0x7E);
-    addRegister("Temp Value", tempValue);
-}
-
-float TestDevice::readTemperature()
-{
-    uint16_t temperature = readRegister16("Temp Value");
-
-    return ((float)(temperature >> 8) + (float)((temperature & 0x00FF) / 100.0));
-}
-
 int main(void)
 {
+    BME280_TPH      tph;
+
     I2CBus & bus = I2CBus::getInstance();
 
     bus.openBus("/dev/i2c-1");
 
-    TestDevice device;
+    BME280 bme280;
 
-    bus.attachDevice("Temp Sensor", device);
+    bus.attachDevice(BME280_DEVICE_NAME, bme280);
 
-    bus.acquire("Temp Sensor");
+    bme280.readTPH(&tph);
 
-    device.readTemperature();
-
-    bus.release("Temp Sensor");
+    printf("Temperature: %.2f\n", tph.temperature);
+    printf("Pressure: %.2f\n", tph.pressure);
+    printf("Humidity: %.2f\n", tph.humidity);
 
     bus.closeBus();
+
+    return 0;
 }
