@@ -5,6 +5,7 @@
 
 #include "i2c.h"
 #include "bme280.h"
+#include "ltr559.h"
 
 using namespace std;
 
@@ -45,15 +46,21 @@ int main(void)
 
     bus.openBus("/dev/i2c-1");
 
-    BME280 bme280;
+    BME280      bme280;
+    LTR559      ltr559;
 
     bus.attachDevice(BME280_DEVICE_NAME, bme280);
+    bus.attachDevice(LTR559_DEVICE_NAME, ltr559);
 
     bme280.readTPH(&tph);
 
     printf("Temperature: %.2f\n", tph.temperature - ((getCPUTemp() - tph.temperature) / TEMP_COMPENSATION_FACTOR));
     printf("Pressure: %.2f\n", tph.pressure);
-    printf("Humidity: %.2f\n", tph.humidity);
+    printf("Humidity: %.2f\n\n", tph.humidity);
+
+    uint16_t lightLevel = ltr559.readALS0();
+
+    printf("Light level: %d\n", lightLevel);
 
     bus.closeBus();
 
