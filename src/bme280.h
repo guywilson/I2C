@@ -14,7 +14,7 @@ typedef struct
 }
 BME280_TPH;
 
-typedef struct
+typedef struct __attribute__((__packed__)) 
 {
     uint16_t    temperature1;
     int16_t     temperature2;
