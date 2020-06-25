@@ -53,26 +53,30 @@ private:
     map<string, I2CRegister>    registers;
 
 protected:
-    void        addRegister(const char * name, I2CRegister & reg);
-    void        removeRegister(const char * name);
+    void            addRegister(const char * name, I2CRegister & reg);
+    void            removeRegister(const char * name);
 
 public:
     I2CDevice() {}
     I2CDevice(const char * name, uint8_t busAddress);
 
-    uint8_t getAddress() {
+    uint8_t         getAddress() {
         return this->address;
+    }
+
+    const char *    getName() {
+        return this->name.c_str();
     }
 
     void setBus(I2CBus * bus);
 
-    uint8_t     readRegister8(const char * name);
-    uint16_t    readRegister16(const char * name);
-    void        readBlock(uint8_t address, uint8_t * data, uint32_t datalength);
+    uint8_t         readRegister8(const char * name);
+    uint16_t        readRegister16(const char * name);
+    void            readBlock(uint8_t address, uint8_t * data, uint32_t datalength);
 
-    void        writeRegister(const char * name, uint8_t value);
-    void        writeRegister(const char * name, uint16_t value);
-    void        writeBlock(uint8_t address, uint8_t * data, uint32_t datalength);
+    void            writeRegister(const char * name, uint8_t value);
+    void            writeRegister(const char * name, uint16_t value);
+    void            writeBlock(uint8_t address, uint8_t * data, uint32_t datalength);
 };
 
 class I2CBus
