@@ -158,9 +158,9 @@ double BME280::getCompensatedHumidity(int32_t adcInput)
     printf("Humidiy compensation1 = 0x%02X\n", compensationData.humidity1);
     printf("Humidiy compensation2 = 0x%04X [%d]\n", compensationData.humidity2, compensationData.humidity2);
     printf("Humidiy compensation3 = 0x%02X\n", compensationData.humidity3);
-    printf("Humidiy compensation4 = 0x%04X, %d\n", compensationData.humidity4, compensationData.humidity4);
-    printf("Humidiy compensation5 = 0x%04X, %d\n", compensationData.humidity5, compensationData.humidity5);
-    printf("Humidiy compensation6 = 0x%02X, %d\n", compensationData.humidity6, compensationData.humidity6);
+    printf("Humidiy compensation4 = 0x%04X [%d]\n", compensationData.humidity4, compensationData.humidity4);
+    printf("Humidiy compensation5 = 0x%04X [%d]\n", compensationData.humidity5, compensationData.humidity5);
+    printf("Humidiy compensation6 = 0x%02X [%d]\n", compensationData.humidity6, compensationData.humidity6);
 
     var1 = ((double)temperatureCalibration) - 76800.0;
 
