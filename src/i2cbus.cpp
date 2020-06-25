@@ -56,7 +56,7 @@ void I2CBus::detachDevice(const char * name)
 
 void I2CBus::busWrite(void * data, uint32_t dataLength)
 {
-    int bytesWritten = write(this->_busFd, data, dataLength);
+    uint32_t bytesWritten = write(this->_busFd, data, dataLength);
 
     if (bytesWritten < dataLength) {
         throw i2c_error(i2c_error::buildMsg("Failed to write %ld bytes to bus: %s", dataLength, strerror(errno)), __FILE__, __LINE__);
@@ -65,7 +65,7 @@ void I2CBus::busWrite(void * data, uint32_t dataLength)
 
 void I2CBus::busRead(void * data, uint32_t dataLength)
 {
-    int bytesRead = read(this->_busFd, data, dataLength);
+    uint32_t bytesRead = read(this->_busFd, data, dataLength);
 
     if (bytesRead < dataLength) {
         throw i2c_error(i2c_error::buildMsg("Failed to read %ld bytes from bus: %s", dataLength, strerror(errno)), __FILE__, __LINE__);
