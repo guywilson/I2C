@@ -177,6 +177,8 @@ double BME280::getCompensatedHumidity(int32_t adcInput)
 
     humidity = var6 * (1.0 - ((double)compensationData.humidity1) * var6 / 524288.0);
 
+    printf("Humidy value = %.2f\n", humidity);
+    
     if (humidity > humidity_max) {
         humidity = humidity_max;
     }
