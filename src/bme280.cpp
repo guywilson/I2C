@@ -162,22 +162,23 @@ double BME280::getCompensatedHumidity(int32_t adcInput)
     printf("Humidity compensation5 = 0x%04X [%d]\n", compensationData.humidity5, compensationData.humidity5);
     printf("Humidity compensation6 = 0x%02X [%d]\n", compensationData.humidity6, compensationData.humidity6);
 
-    var1 = ((double)temperatureCalibration) - 76800.0;
+    var1 = ((double)temperatureCalibration) - (double)76800.0;
     printf("var1 = %.2f\n", var1);
 
-    var2 = (((double)compensationData.humidity4) * 64.0 + (((double)compensationData.humidity5) / 16384.0) * var1);
+    var2 = (((double)compensationData.humidity4) * (double)64.0 + (((double)compensationData.humidity5) / (double)16384.0) * var1);
     printf("var2 = %.2f\n", var2);
 
-    var3 = adcInput - var2;
+    var3 = (double)adcInput - var2;
     printf("var3 = %.2f\n", var3);
 
-    var4 = ((double)compensationData.humidity2) / 65536.0;
+    var4 = ((double)compensationData.humidity2) / (double)65536.0;
     printf("var4 = %.2f\n", var4);
 
-    var5 = (1.0 + (((double)compensationData.humidity3) / 67108864.0) * var1);
+    var5 = ((double)1.0 + (((double)compensationData.humidity3) / (double)67108864.0) * var1);
     printf("var5 = %.2f\n", var5);
 
-    var6 = 1.0 + (((double)compensationData.humidity6) / 67108864.0) * var1 * var5;
+    var6 = (double)1.0 + (((double)compensationData.humidity6) / (double)67108864.0) * var1 * var5;
+    printf("var6 = %.2f\n", var6);
     var6 = var3 * var4 * (var5 * var6);
     printf("var6 = %.2f\n", var6);
 
