@@ -10,7 +10,7 @@ using namespace std;
 
 I2CDevice::I2CDevice(const char * name, uint8_t busAddress)
 {
-    this->name = name;
+    this->name.assign(name);
     this->address = busAddress;
 }
 
@@ -21,12 +21,14 @@ void I2CDevice::setBus(I2CBus * bus)
 
 void I2CDevice::addRegister(const char * name, I2CRegister & reg)
 {
-    this->registers[name] = reg;
+    string nm(name);
+    this->registers[nm] = reg;
 }
 
 void I2CDevice::removeRegister(const char * name)
 {
-    this->registers.erase(name);
+    string nm(name);
+    this->registers.erase(nm);
 }
 
 uint8_t I2CDevice::readRegister8(const char * name)
@@ -34,7 +36,8 @@ uint8_t I2CDevice::readRegister8(const char * name)
     uint8_t     value;
     uint8_t     address;
 
-    I2CRegister r = this->registers[name];
+    string nm(name);
+    I2CRegister r = this->registers[nm];
 
     address = r.getAddress();
 
@@ -49,7 +52,8 @@ uint16_t I2CDevice::readRegister16(const char * name)
     uint16_t    value;
     uint8_t     address;
 
-    I2CRegister r = this->registers[name];
+    string nm(name);
+    I2CRegister r = this->registers[nm];
 
     address = r.getAddress();
 
@@ -69,7 +73,8 @@ void I2CDevice::writeRegister(const char * name, uint8_t value)
 {
     uint8_t     address;
 
-    I2CRegister r = this->registers[name];
+    string nm(name);
+    I2CRegister r = this->registers[nm];
 
     address = r.getAddress();
 
@@ -81,7 +86,8 @@ void I2CDevice::writeRegister(const char * name, uint16_t value)
 {
     uint8_t     address;
 
-    I2CRegister r = this->registers[name];
+    string nm(name);
+    I2CRegister r = this->registers[nm];
 
     address = r.getAddress();
 

@@ -80,7 +80,8 @@ void I2CBus::acquire(const char * deviceName)
 
     this->lock = 1;
 
-    I2CDevice dev = this->devices[deviceName];
+    string nm(deviceName);
+    I2CDevice dev = this->devices[nm];
 
     int err = ioctl(this->_busFd, I2C_WORKER, dev.getAddress());
 
