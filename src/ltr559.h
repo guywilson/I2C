@@ -25,8 +25,7 @@ private:
 public:
     LTR559();
 
-    uint16_t readALS0();
-    uint16_t readALS1();
+    int32_t readLux();
 };
 
 #endif

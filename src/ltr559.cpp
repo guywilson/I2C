@@ -25,24 +25,52 @@ LTR559::LTR559() : I2CDevice(LTR559_DEVICE_NAME, LTR559_BUS_ADDRESS)
     bus.release(getName());
 }
 
-uint16_t LTR559::readALS0()
+int32_t LTR559::readLux()
 {
-    uint16_t        value;
+    uint16_t        alsval_ch0;
+    uint16_t        alsval_ch1;
+    int32_t         lux;
+    int             ch0_co;
+    int             ch1_co;
+    int             ratio;
+    int             ch0_c[4] = {17743,42785,5926,0};
+    int             ch1_c[4] = {-11059,19548,-1185,0};
 
     bus.acquire(getName());
-    value = readRegister16(LTR559_ALS_CHANNEL0_NAME);
+    alsval_ch0 = readRegister16(LTR559_ALS_CHANNEL0_NAME);
     bus.release(getName());
-
-    return value;
-}
-
-uint16_t LTR559::readALS1()
-{
-    uint16_t        value;
 
     bus.acquire(getName());
-    value = readRegister16(LTR559_ALS_CHANNEL1_NAME);
+    alsval_ch1 = readRegister16(LTR559_ALS_CHANNEL1_NAME);
     bus.release(getName());
 
-    return value;
+    if ((alsval_ch0 + alsval_ch1) == 0) {
+            ratio = 1000;
+    }
+    else {
+        ratio = alsval_ch1 * 1000 / (alsval_ch1 + alsval_ch0);
+    }
+    if (ratio < 450) {
+            ch0_co = ch0_c[0];
+            ch1_co = ch1_c[0];
+    }
+    else if ((ratio >= 450) && (ratio < 640)) {
+            ch0_co = ch0_c[1];
+            ch1_co = ch1_c[1];
+    }
+    else if ((ratio >= 640) && (ratio < 850)) {
+            ch0_co = ch0_c[2];
+            ch1_co = ch1_c[2];
+    }
+    else if (ratio >= 850) {
+            ch0_co = ch0_c[3];
+            ch1_co = ch1_c[3];
+    }
+    else {
+        throw i2c_error("Invalid lux calculation", __FILE__, __LINE__);
+    }
+    
+    lux = (alsval_ch0 * ch0_co - alsval_ch1 * ch1_co) / 10000;
+
+    return lux;
 }
