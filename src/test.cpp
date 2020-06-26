@@ -50,7 +50,7 @@ int main(void)
     LTR559      ltr559;
 
     bus.attachDevice(BME280_DEVICE_NAME, bme280);
-    bus.attachDevice(LTR559_DEVICE_NAME, ltr559);
+    //bus.attachDevice(LTR559_DEVICE_NAME, ltr559);
 
     bme280.readTPH(&tph);
 
@@ -58,9 +58,9 @@ int main(void)
     printf("Pressure: %.2f\n", tph.pressure);
     printf("Humidity: %.2f\n\n", tph.humidity);
 
-    uint16_t lightLevel = ltr559.readALS0();
+    //uint16_t lightLevel = ltr559.readALS0();
 
-    printf("Light level: %d\n", lightLevel);
+    //printf("Light level: %d\n", lightLevel);
 
     bus.closeBus();
 
