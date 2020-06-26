@@ -49,12 +49,12 @@ int main(void)
     BME280      bme280;
     LTR559      ltr559;
 
-    bus.attachDevice(BME280_DEVICE_NAME, bme280);
+    bus.attachDevice(bme280);
     //bus.attachDevice(LTR559_DEVICE_NAME, ltr559);
 
     bme280.readTPH(&tph);
 
-    printf("Temperature: %.2f\n", tph.temperature - ((getCPUTemp() - tph.temperature) / TEMP_COMPENSATION_FACTOR));
+    printf("Temperature: %.2f\n", (tph.temperature - ((getCPUTemp() - tph.temperature) / TEMP_COMPENSATION_FACTOR)));
     printf("Pressure: %.2f\n", tph.pressure);
     printf("Humidity: %.2f\n\n", tph.humidity);
 

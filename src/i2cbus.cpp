@@ -42,9 +42,9 @@ void I2CBus::closeBus()
     }
 }
 
-void I2CBus::attachDevice(const char * name, I2CDevice & device)
+void I2CBus::attachDevice(I2CDevice & device)
 {
-    this->devices[name] = device;
+    this->devices[device.getName()] = device;
 
     device.setBus(this);
 }

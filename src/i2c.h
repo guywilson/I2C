@@ -111,7 +111,7 @@ public:
     void openBus(const char * pszDeviceName);
     void closeBus();
 
-    void attachDevice(const char * name, I2CDevice & device);
+    void attachDevice(I2CDevice & device);
     void detachDevice(const char * name);
 
     void acquire(const char * deviceName);
