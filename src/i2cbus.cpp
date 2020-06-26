@@ -51,7 +51,8 @@ void I2CBus::attachDevice(I2CDevice & device)
 
 void I2CBus::detachDevice(const char * name)
 {
-    this->devices.erase(name);
+    string nm(name);
+    this->devices.erase(nm);
 }
 
 void I2CBus::busWrite(void * data, uint32_t dataLength)

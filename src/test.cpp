@@ -58,7 +58,7 @@ int main(void)
     printf("Pressure: %.2f\n", tph.pressure);
     printf("Humidity: %.2f\n\n", tph.humidity);
 
-    usleep(500000L);
+    usleep(100000L);
 
     int32_t lightLevel = ltr559.readLux();
 
