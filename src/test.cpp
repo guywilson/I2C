@@ -55,15 +55,14 @@ int main(void)
 
     bme280.readTPH(&tph);
 
-    printf("Temperature: %.2f\n", (tph.temperature - ((getCPUTemp() - tph.temperature) / TEMP_COMPENSATION_FACTOR)));
-    printf("Pressure: %.2f\n", tph.pressure);
-    printf("Humidity: %.2f\n\n", tph.humidity);
-
     usleep(100000L);
 
     int32_t lightLevel = ltr559.readLux();
 
-    printf("Light level: %d\n", lightLevel);
+    printf("Temperature: %.2f\n", (tph.temperature - ((getCPUTemp() - tph.temperature) / TEMP_COMPENSATION_FACTOR)));
+    printf("Pressure: %.2f\n", tph.pressure);
+    printf("Humidity: %.2f\n", tph.humidity);
+    printf("Light level: %d\n\n", lightLevel);
 
     bus.closeBus();
 
