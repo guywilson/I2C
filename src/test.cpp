@@ -10,6 +10,7 @@
 using namespace std;
 
 #define TEMP_COMPENSATION_FACTOR            2.25
+#define I2C_DEVICE_NAME                     "/dev/i2c-1"
 
 double getCPUTemp()
 {
@@ -44,7 +45,7 @@ int main(void)
 
     I2CBus & bus = I2CBus::getInstance();
 
-    bus.openBus("/dev/i2c-1");
+    bus.openBus(I2C_DEVICE_NAME);
 
     BME280      bme280;
     LTR559      ltr559;
