@@ -19,16 +19,14 @@ void I2CDevice::setBus(I2CBus * bus)
     this->bus = bus;
 }
 
-void I2CDevice::addRegister(const char * name, I2CRegister & reg)
+void I2CDevice::addRegister(const char * name, I2CRegister * reg)
 {
-    string nm(name);
-    this->registers[nm] = reg;
+    this->registers[name] = reg;
 }
 
 void I2CDevice::removeRegister(const char * name)
 {
-    string nm(name);
-    this->registers.erase(nm);
+    this->registers.erase(name);
 }
 
 uint8_t I2CDevice::readRegister8(const char * name)
@@ -36,10 +34,9 @@ uint8_t I2CDevice::readRegister8(const char * name)
     uint8_t     value;
     uint8_t     address;
 
-    string nm(name);
-    I2CRegister r = this->registers[nm];
+    I2CRegister * r = this->registers[name];
 
-    address = r.getAddress();
+    address = r->getAddress();
 
     bus->busWrite(&address, 1);
     bus->busRead(&value, 1);
@@ -52,10 +49,9 @@ uint16_t I2CDevice::readRegister16(const char * name)
     uint16_t    value;
     uint8_t     address;
 
-    string nm(name);
-    I2CRegister r = this->registers[nm];
+    I2CRegister * r = this->registers[name];
 
-    address = r.getAddress();
+    address = r->getAddress();
 
     bus->busWrite(&address, 1);
     bus->busRead(&value, 2);
@@ -73,10 +69,9 @@ void I2CDevice::writeRegister(const char * name, uint8_t value)
 {
     uint8_t     address;
 
-    string nm(name);
-    I2CRegister r = this->registers[nm];
+    I2CRegister * r = this->registers[name];
 
-    address = r.getAddress();
+    address = r->getAddress();
 
     bus->busWrite(&address, 1);
     bus->busWrite(&value, 1);
@@ -86,10 +81,9 @@ void I2CDevice::writeRegister(const char * name, uint16_t value)
 {
     uint8_t     address;
 
-    string nm(name);
-    I2CRegister r = this->registers[nm];
+    I2CRegister * r = this->registers[name];
 
-    address = r.getAddress();
+    address = r->getAddress();
 
     bus->busWrite(&address, 1);
     bus->busWrite(&value, 2);
@@ -100,4 +94,3 @@ void I2CDevice::writeBlock(uint8_t address, uint8_t * data, uint32_t datalength)
     bus->busWrite(&address, 1);
     bus->busWrite(data, datalength);
 }
-

@@ -47,23 +47,26 @@ int main(void)
 
     bus.openBus(I2C_DEVICE_NAME);
 
-    BME280      bme280;
-    LTR559      ltr559;
+    BME280 *    bme280 = new BME280();
+    LTR559 *    ltr559 = new LTR559();
 
     bus.attachDevice(bme280);
     bus.attachDevice(ltr559);
 
-    bme280.readTPH(&tph);
+    bme280->readTPH(&tph);
 
     usleep(100000L);
 
-    int32_t lightLevel = ltr559.readLux();
+    int32_t lightLevel = ltr559->readLux();
 
     printf("Temperature: %.2f\n", (tph.temperature - ((getCPUTemp() - tph.temperature) / TEMP_COMPENSATION_FACTOR)));
     printf("Pressure: %.2f\n", tph.pressure);
     printf("Humidity: %.2f\n", tph.humidity);
     printf("Light level: %d\n\n", lightLevel);
 
+    delete ltr559;
+    delete bme280;
+    
     bus.closeBus();
 
     return 0;

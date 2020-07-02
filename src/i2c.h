@@ -50,10 +50,10 @@ private:
     string                      name;
     uint8_t                     address;
     I2CBus *                    bus;
-    map<string, I2CRegister>    registers;
+    map<string, I2CRegister*>   registers;
 
 protected:
-    void            addRegister(const char * name, I2CRegister & reg);
+    void            addRegister(const char * name, I2CRegister * reg);
     void            removeRegister(const char * name);
 
 public:
@@ -94,7 +94,7 @@ private:
 
     int                         _busFd = 0;
     pthread_mutex_t             mutex;
-    map<string, I2CDevice>      devices;
+    map<string, I2CDevice*>     devices;
     uint8_t                     lock = 0;
 
 protected:
@@ -111,13 +111,13 @@ public:
     void openBus(const char * pszDeviceName);
     void closeBus();
 
-    void attachDevice(I2CDevice & device);
+    void attachDevice(I2CDevice * device);
     void detachDevice(const char * name);
 
     void acquire(const char * deviceName);
     void release(const char * deviceName);
 
-    I2CDevice getDevice(const char * name);
+    I2CDevice * getDevice(const char * name);
 };
 
 #endif

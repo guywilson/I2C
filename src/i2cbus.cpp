@@ -42,17 +42,16 @@ void I2CBus::closeBus()
     }
 }
 
-void I2CBus::attachDevice(I2CDevice & device)
+void I2CBus::attachDevice(I2CDevice * device)
 {
-    this->devices[device.getName()] = device;
+    this->devices[device->getName()] = device;
 
-    device.setBus(this);
+    device->setBus(this);
 }
 
 void I2CBus::detachDevice(const char * name)
 {
-    string nm(name);
-    this->devices.erase(nm);
+    this->devices.erase(name);
 }
 
 void I2CBus::busWrite(void * data, uint32_t dataLength)
@@ -81,10 +80,9 @@ void I2CBus::acquire(const char * deviceName)
 
     this->lock = 1;
 
-    string nm(deviceName);
-    I2CDevice dev = this->devices[nm];
+    I2CDevice * dev = this->devices[deviceName];
 
-    int err = ioctl(this->_busFd, I2C_WORKER, dev.getAddress());
+    int err = ioctl(this->_busFd, I2C_WORKER, dev->getAddress());
 
     if (err) {
         throw i2c_error(i2c_error::buildMsg("Failed to acquire I2C bus access for device %s: %s", deviceName, strerror(errno)), __FILE__, __LINE__);
@@ -96,7 +94,7 @@ void I2CBus::release(const char * deviceName)
     pthread_mutex_unlock(&mutex);
 }
 
-I2CDevice I2CBus::getDevice(const char * name)
+I2CDevice * I2CBus::getDevice(const char * name)
 {
     return this->devices[name];
 }
