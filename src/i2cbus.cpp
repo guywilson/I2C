@@ -79,11 +79,13 @@ void I2CBus::acquire(const char * deviceName)
     if (pthread_mutex_trylock(&mutex)) {
         throw i2c_error(i2c_error::buildMsg("Failed to acquire bus for device %s, it is already locked", deviceName), __FILE__, __LINE__);
     }
+    printf("Acquired mutex lock\n");
 
     this->lock = 1;
 
     I2CDevice * dev = this->devices[deviceName];
-
+    printf("Got device object for device %s\n", dev->getName());
+    
     int err = ioctl(this->_busFd, I2C_WORKER, dev->getAddress());
 
     if (err) {

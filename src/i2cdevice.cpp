@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdint.h>
 
 #include <map>
@@ -70,6 +71,7 @@ void I2CDevice::writeRegister(const char * name, uint8_t value)
     uint8_t     address;
 
     I2CRegister * r = this->registers[name];
+    printf("Got register object with name %s\n", r->getName());
 
     address = r->getAddress();
 
