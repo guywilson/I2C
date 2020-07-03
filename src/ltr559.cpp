@@ -8,14 +8,20 @@
 
 LTR559::LTR559() : I2CDevice(LTR559_DEVICE_NAME, LTR559_BUS_ADDRESS)
 {
-    I2CRegister * ALSControl = new I2CRegister(LTR559_ALS_CONTROL_NAME, LTR559_ALS_CONTROL_ADDRESS);
+    ALSControl = new I2CRegister(LTR559_ALS_CONTROL_NAME, LTR559_ALS_CONTROL_ADDRESS);
+    ALSChannel0 = new I2CRegister(LTR559_ALS_CHANNEL0_NAME, LTR559_ALS_CHANNEL0_ADDRESS);
+    ALSChannel1 = new I2CRegister(LTR559_ALS_CHANNEL1_NAME, LTR559_ALS_CHANNEL1_ADDRESS);
+
     addRegister(ALSControl);
-
-    I2CRegister * ALSChannel0 = new I2CRegister(LTR559_ALS_CHANNEL0_NAME, LTR559_ALS_CHANNEL0_ADDRESS);
     addRegister(ALSChannel0);
-
-    I2CRegister * ALSChannel1 = new I2CRegister(LTR559_ALS_CHANNEL1_NAME, LTR559_ALS_CHANNEL1_ADDRESS);
     addRegister(ALSChannel1);
+}
+
+LTR559::~LTR559()
+{
+    delete ALSChannel1;
+    delete ALSChannel0;
+    delete ALSControl;
 }
 
 void LTR559::initialise()

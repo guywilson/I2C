@@ -22,8 +22,13 @@ class LTR559 : public I2CDevice
 private:
     I2CBus & bus = I2CBus::getInstance();
 
+    I2CRegister *   ALSControl;
+    I2CRegister *   ALSChannel0;
+    I2CRegister *   ALSChannel1;
+
 public:
     LTR559();
+    ~LTR559();
 
     void initialise();
 
