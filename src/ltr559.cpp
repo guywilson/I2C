@@ -10,12 +10,15 @@ LTR559::LTR559() : I2CDevice(LTR559_DEVICE_NAME, LTR559_BUS_ADDRESS)
 {
     I2CRegister * ALSControl = new I2CRegister(LTR559_ALS_CONTROL_NAME, LTR559_ALS_CONTROL_ADDRESS);
     addRegister(ALSControl->getName(), ALSControl);
+    printf("Added ALS Control reg\n");
 
     I2CRegister * ALSChannel0 = new I2CRegister(LTR559_ALS_CHANNEL0_NAME, LTR559_ALS_CHANNEL0_ADDRESS);
     addRegister(ALSChannel0->getName(), ALSChannel0);
+    printf("Added ALS Channel0 reg\n");
 
     I2CRegister * ALSChannel1 = new I2CRegister(LTR559_ALS_CHANNEL1_NAME, LTR559_ALS_CHANNEL1_ADDRESS);
     addRegister(ALSChannel1->getName(), ALSChannel1);
+    printf("Added ALS Channel1 reg\n");
 
     /*
     ** Enable ALS...
