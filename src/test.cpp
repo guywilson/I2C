@@ -59,6 +59,7 @@ int main(void)
         bus.attachDevice(bme280);
         bus.attachDevice(ltr559);
 
+        bme280->initialise();
         ltr559->enableALS();
 
         bme280->readTPH(&tph);

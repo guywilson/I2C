@@ -53,7 +53,7 @@ private:
     map<string, I2CRegister*>   registers;
 
 protected:
-    void            addRegister(const char * name, I2CRegister * reg);
+    void            addRegister(I2CRegister * reg);
     void            removeRegister(const char * name);
 
 public:

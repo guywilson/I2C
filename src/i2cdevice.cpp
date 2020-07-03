@@ -20,9 +20,9 @@ void I2CDevice::setBus(I2CBus * bus)
     this->bus = bus;
 }
 
-void I2CDevice::addRegister(const char * name, I2CRegister * reg)
+void I2CDevice::addRegister(I2CRegister * reg)
 {
-    this->registers[name] = reg;
+    this->registers[reg->getName()] = reg;
 }
 
 void I2CDevice::removeRegister(const char * name)

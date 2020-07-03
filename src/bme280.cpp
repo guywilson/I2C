@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "i2c_error.h"
 #include "i2c.h"
@@ -9,6 +10,54 @@
 BME280::BME280() : I2CDevice(BME280_DEVICE_NAME, BME280_BUS_ADDRESS)
 {
     memset(&compensationData, 0x00, sizeof(BME280_COMPENSATIONDATA));
+
+    reset = new I2CRegister(BME280_REG_RESET_NAME, BME280_REG_RESET_ADDRESS);
+    chipID = new I2CRegister(BME280_REG_CHIPID_NAME, BME280_REG_CHIPID_ADDRESS);
+    status = new I2CRegister(BME280_REG_STATUS_NAME, BME280_REG_STATUS_ADDRESS);
+    config = new I2CRegister(BME280_REG_CONFIG_NAME, BME280_REG_CONFIG_ADDRESS);
+    ctrlMeasure = new I2CRegister(BME280_REG_CTRLMEAS_NAME, BME280_REG_CTRLMEAS_ADDRESS);
+    ctrlHumidity = new I2CRegister(BME280_REG_CTRLHUM_NAME, BME280_REG_CTRLHUM_ADDRESS);
+
+    addRegister(reset);
+    addRegister(chipID);
+    addRegister(status);
+    addRegister(config);
+    addRegister(ctrlMeasure);
+    addRegister(ctrlHumidity);
+}
+
+BME280::~BME280()
+{
+    delete ctrlHumidity;
+    delete ctrlMeasure;
+    delete config;
+    delete status;
+    delete chipID;
+    delete reset;
+}
+
+void BME280::initialise()
+{
+    /*
+    ** Reset the device...
+    */
+    bus.acquire(getName());
+    writeRegister(BME280_REG_RESET_NAME, (uint8_t)0xB6);
+    bus.release(getName());
+
+    usleep(100000L);
+
+    bus.acquire(getName());
+    writeRegister(BME280_REG_CTRLHUM_NAME, (uint8_t)0x05);
+    bus.release(getName());
+
+    bus.acquire(getName());
+    writeRegister(BME280_REG_CTRLMEAS_NAME, (uint8_t)0xB7);
+    bus.release(getName());
+
+    bus.acquire(getName());
+    writeRegister(BME280_REG_CONFIG_NAME, (uint8_t)0x88);
+    bus.release(getName());
 }
 
 void BME280::readTPH(BME280_TPH * tph)
