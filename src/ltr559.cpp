@@ -19,10 +19,10 @@ LTR559::LTR559() : I2CDevice(LTR559_DEVICE_NAME, LTR559_BUS_ADDRESS)
     I2CRegister * ALSChannel1 = new I2CRegister(LTR559_ALS_CHANNEL1_NAME, LTR559_ALS_CHANNEL1_ADDRESS);
     addRegister(ALSChannel1->getName(), ALSChannel1);
     printf("Added ALS Channel1 reg\n");
+}
 
-    /*
-    ** Enable ALS...
-    */
+void LTR559::enableALS()
+{
     bus.acquire(getName());
     writeRegister(LTR559_ALS_CONTROL_NAME, (uint8_t)0x01);
     bus.release(getName());

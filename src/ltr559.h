@@ -25,6 +25,8 @@ private:
 public:
     LTR559();
 
+    void enableALS();
+    
     int32_t readLux();
 };
 

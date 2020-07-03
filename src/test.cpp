@@ -55,10 +55,12 @@ int main(void)
     LTR559 *    ltr559 = new LTR559();
 
     printf("Instantiated devices...\n");
-    
+
     bus.attachDevice(bme280);
     bus.attachDevice(ltr559);
 
+    ltr559->enableALS();
+    
     bme280->readTPH(&tph);
 
     usleep(100000L);
