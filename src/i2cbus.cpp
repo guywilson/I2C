@@ -44,11 +44,7 @@ void I2CBus::closeBus()
 
 void I2CBus::attachDevice(I2CDevice * device)
 {
-    printf("Ataching device with name %s to bus\n", device->getName());
-    
     this->devices[device->getName()] = device;
-
-    printf("Attached device %s\n", device->getName());
 
     device->setBus(this);
 }
@@ -78,17 +74,13 @@ void I2CBus::busRead(void * data, uint32_t dataLength)
 
 void I2CBus::acquire(const char * deviceName)
 {
-    printf("Acquiring bus for device %s\n", deviceName);
-
     if (pthread_mutex_trylock(&mutex)) {
         throw i2c_error(i2c_error::buildMsg("Failed to acquire bus for device %s, it is already locked", deviceName), __FILE__, __LINE__);
     }
-    printf("Acquired mutex lock\n");
 
     this->lock = 1;
 
     I2CDevice * dev = this->devices[deviceName];
-    printf("Got device object for device %s\n", dev->getName());
 
     int err = ioctl(this->_busFd, I2C_WORKER, dev->getAddress());
 

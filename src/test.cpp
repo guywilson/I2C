@@ -44,38 +44,43 @@ int main(void)
     BME280_TPH      tph;
 
     I2CBus & bus = I2CBus::getInstance();
-
     printf("Got bus instance...\n");
 
-    bus.openBus(I2C_DEVICE_NAME);
+    try {
+        bus.openBus(I2C_DEVICE_NAME);
 
-    printf("Opened bus...\n");
+        printf("Opened bus...\n");
 
-    BME280 *    bme280 = new BME280();
-    LTR559 *    ltr559 = new LTR559();
+        BME280 *    bme280 = new BME280();
+        LTR559 *    ltr559 = new LTR559();
 
-    printf("Instantiated devices...\n");
+        printf("Instantiated devices...\n");
 
-    bus.attachDevice(bme280);
-    bus.attachDevice(ltr559);
+        bus.attachDevice(bme280);
+        bus.attachDevice(ltr559);
 
-    ltr559->enableALS();
-    
-    bme280->readTPH(&tph);
+        ltr559->enableALS();
 
-    usleep(100000L);
+        bme280->readTPH(&tph);
 
-    int32_t lightLevel = ltr559->readLux();
+        usleep(100000L);
 
-    printf("Temperature: %.2f\n", (tph.temperature - ((getCPUTemp() - tph.temperature) / TEMP_COMPENSATION_FACTOR)));
-    printf("Pressure: %.2f\n", tph.pressure);
-    printf("Humidity: %.2f\n", tph.humidity);
-    printf("Light level: %d\n\n", lightLevel);
+        int32_t lightLevel = ltr559->readLux();
 
-    delete ltr559;
-    delete bme280;
-    
-    bus.closeBus();
+        printf("Temperature: %.2f\n", (tph.temperature - ((getCPUTemp() - tph.temperature) / TEMP_COMPENSATION_FACTOR)));
+        printf("Pressure: %.2f\n", tph.pressure);
+        printf("Humidity: %.2f\n", tph.humidity);
+        printf("Light level: %d\n\n", lightLevel);
+
+        delete ltr559;
+        delete bme280;
+        
+        bus.closeBus();
+    }
+    catch (i2c_error & e) {
+        fprintf(stderr, "Caught exception: %s", e.what());
+        exit(-1);
+    }
 
     return 0;
 }
