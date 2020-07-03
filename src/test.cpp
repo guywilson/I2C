@@ -44,7 +44,6 @@ int main(void)
     BME280_TPH      tph;
 
     I2CBus & bus = I2CBus::getInstance();
-    printf("Got bus instance...\n");
 
     try {
         bus.openBus(I2C_DEVICE_NAME);
@@ -54,13 +53,11 @@ int main(void)
         BME280 *    bme280 = new BME280();
         LTR559 *    ltr559 = new LTR559();
 
-        printf("Instantiated devices...\n");
-
         bus.attachDevice(bme280);
         bus.attachDevice(ltr559);
 
         bme280->initialise();
-        ltr559->enableALS();
+        ltr559->initialise();
 
         bme280->readTPH(&tph);
 

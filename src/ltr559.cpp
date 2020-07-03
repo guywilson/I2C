@@ -18,7 +18,7 @@ LTR559::LTR559() : I2CDevice(LTR559_DEVICE_NAME, LTR559_BUS_ADDRESS)
     addRegister(ALSChannel1);
 }
 
-void LTR559::enableALS()
+void LTR559::initialise()
 {
     bus.acquire(getName());
     writeRegister(LTR559_ALS_CONTROL_NAME, (uint8_t)0x01);
