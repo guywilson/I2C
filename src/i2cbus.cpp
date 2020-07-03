@@ -46,6 +46,8 @@ void I2CBus::attachDevice(I2CDevice * device)
 {
     this->devices[device->getName()] = device;
 
+    printf("Attached device %s\n", device->getName());
+
     device->setBus(this);
 }
 
