@@ -8,14 +8,23 @@
 #define LTR559_DEVICE_NAME              "LTR559"
 #define LTR559_BUS_ADDRESS              0x23
 
-#define LTR559_ALS_CONTROL_NAME         "ALS Control Register"
-#define LTR559_ALS_CONTROL_ADDRESS      0x80
+#define LTR559_REG_ALSCONTROL_NAME      "ALS Control Register"
+#define LTR559_REG_ALSCONTROL_ADDRESS   0x80
 
-#define LTR559_ALS_CHANNEL0_NAME        "ALS Channel 0"
-#define LTR559_ALS_CHANNEL0_ADDRESS     0x8A
+#define LTR559_REG_ALSMEASURERT_NAME    "ALS Measure Rate"
+#define LTR559_REG_ALSMEASURERT_ADDRESS 0x84
 
-#define LTR559_ALS_CHANNEL1_NAME        "ALS Channel 1"
-#define LTR559_ALS_CHANNEL1_ADDRESS     0x88
+#define LTR559_REG_ALSTHRESLO_NAME     "ALS Threshold Low"
+#define LTR559_REG_ALSTHRESLO_ADDRESS   0x99
+
+#define LTR559_REG_ALSTHRESHI_NAME     "ALS Threshold High"
+#define LTR559_REG_ALSTHRESHI_ADDRESS   0x97
+
+#define LTR559_REG_ALSCHANNEL0_NAME     "ALS Channel 0"
+#define LTR559_REG_ALSCHANNEL0_ADDRESS  0x8A
+
+#define LTR559_REG_ALSCHANNEL1_NAME     "ALS Channel 1"
+#define LTR559_REG_ALSCHANNEL1_ADDRESS  0x88
 
 class LTR559 : public I2CDevice
 {
@@ -23,6 +32,9 @@ private:
     I2CBus & bus = I2CBus::getInstance();
 
     I2CRegister *   ALSControl;
+    I2CRegister *   ALSMeasureRate;
+    I2CRegister *   ALSThresholdHi;
+    I2CRegister *   ALSThresholdLo;
     I2CRegister *   ALSChannel0;
     I2CRegister *   ALSChannel1;
 
