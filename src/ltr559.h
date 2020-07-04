@@ -44,7 +44,7 @@ public:
 
     void initialise();
 
-    int32_t readLux();
+    double readLux();
 };
 
 #endif

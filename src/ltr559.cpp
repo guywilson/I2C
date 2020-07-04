@@ -66,11 +66,11 @@ void LTR559::initialise()
     bus.release(getName());
 }
 
-int32_t LTR559::readLux()
+double LTR559::readLux()
 {
     uint16_t        alsval_ch0;
     uint16_t        alsval_ch1;
-    int32_t         lux;
+    double          lux;
     int             ch0_co;
     int             ch1_co;
     int             ratio;
@@ -86,32 +86,37 @@ int32_t LTR559::readLux()
     bus.release(getName());
 
     if ((alsval_ch0 + alsval_ch1) == 0) {
-            ratio = 1000;
+            ratio = 101;
     }
     else {
-        ratio = alsval_ch1 * 1000 / (alsval_ch1 + alsval_ch0);
+        ratio = alsval_ch1 * 100 / (alsval_ch1 + alsval_ch0);
     }
-    if (ratio < 450) {
+    if (ratio < 45) {
             ch0_co = ch0_c[0];
             ch1_co = ch1_c[0];
     }
-    else if ((ratio >= 450) && (ratio < 640)) {
+    else if ((ratio >= 45) && (ratio < 64)) {
             ch0_co = ch0_c[1];
             ch1_co = ch1_c[1];
     }
-    else if ((ratio >= 640) && (ratio < 850)) {
+    else if ((ratio >= 64) && (ratio < 85)) {
             ch0_co = ch0_c[2];
             ch1_co = ch1_c[2];
     }
-    else if (ratio >= 850) {
+    else if (ratio >= 85) {
             ch0_co = ch0_c[3];
             ch1_co = ch1_c[3];
     }
     else {
         throw i2c_error("Invalid lux calculation", __FILE__, __LINE__);
     }
-    
-    lux = (alsval_ch0 * ch0_co - alsval_ch1 * ch1_co) / 10000;
+
+    lux = ((double)alsval_ch0 * (double)ch0_co) - ((double)alsval_ch1 * (double)ch1_co);
+    lux /= ((double)50.0 / (double)100.0);
+    lux /= (double)4.0;
+    lux /= (double)10000.0;
+
+    //lux = (alsval_ch0 * ch0_co - alsval_ch1 * ch1_co) / 10000;
 
     return lux;
 }
