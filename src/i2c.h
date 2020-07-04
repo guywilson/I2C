@@ -22,28 +22,6 @@ class I2CBus;
 class I2CDevice;
 class I2CRegister;
 
-class I2CRegister
-{
-private:
-    uint8_t         address;
-    string          name;
-    
-public:
-    I2CRegister() {}
-    I2CRegister(const char * name, uint8_t address) {
-        this->name.assign(name);
-        this->address = address;
-    }
-
-    uint8_t getAddress() {
-        return this->address;
-    }
-
-    const char * getName() {
-        return this->name.c_str();
-    }
-};
-
 class I2CDevice
 {
 private:
@@ -68,14 +46,21 @@ public:
         return this->name.c_str();
     }
 
-    void setBus(I2CBus * bus);
+    I2CBus * getBus() {
+        return this->bus;
+    }
+    void setBus(I2CBus * bus) {
+        this->bus = bus;
+    }
 
     uint8_t         readRegister8(const char * name);
     uint16_t        readRegister16(const char * name);
+    uint32_t        readRegister32(const char * name);
     void            readBlock(uint8_t address, uint8_t * data, uint32_t datalength);
 
-    void            writeRegister(const char * name, uint8_t value);
-    void            writeRegister(const char * name, uint16_t value);
+    void            writeRegister8(const char * name, uint8_t value);
+    void            writeRegister16(const char * name, uint16_t value);
+    void            writeRegister32(const char * name, uint32_t value);
     void            writeBlock(uint8_t address, uint8_t * data, uint32_t datalength);
 };
 
@@ -118,6 +103,146 @@ public:
     void release(const char * deviceName);
 
     I2CDevice * getDevice(const char * name);
+};
+
+class I2CRegister
+{
+private:
+    I2CDevice *     device;
+    uint8_t         address;
+    string          name;
+
+protected:
+    void setDevice(I2CDevice * device) {
+        this->device = device;
+    }
+
+    I2CDevice * getDevice() {
+        return this->device;
+    }
+
+    void acquireBus() {
+        getDevice()->getBus()->acquire(getDevice()->getName());
+    }
+
+    void releaseBus() {
+        getDevice()->getBus()->release(getDevice()->getName());
+    }
+
+public:
+    I2CRegister() {}
+    I2CRegister(const char * name, uint8_t address) {
+        this->name.assign(name);
+        this->address = address;
+    }
+
+    uint8_t getAddress() {
+        return this->address;
+    }
+
+    const char * getName() {
+        return this->name.c_str();
+    }
+};
+
+class I2CRegisterBlock : public I2CRegister
+{
+public:
+    I2CRegisterBlock(I2CDevice * device) : I2CRegister() {
+        setDevice(device);
+    }
+    I2CRegisterBlock(I2CDevice * device, const char * name, uint8_t address) : I2CRegister(name, address) {
+        setDevice(device);
+    }
+
+    void read(uint8_t * data, uint32_t dataLength) {
+        acquireBus();
+        getDevice()->readBlock(getAddress(), data, dataLength);
+        releaseBus();
+    }
+    void write(uint8_t * data, uint32_t dataLength) {
+        acquireBus();
+        getDevice()->writeBlock(getAddress(), data, dataLength);
+        releaseBus();
+    }
+};
+
+class I2CRegister32bit : public I2CRegister
+{
+public:
+    I2CRegister32bit(I2CDevice * device) : I2CRegister() {
+        setDevice(device);
+    }
+    I2CRegister32bit(I2CDevice * device, const char * name, uint8_t address) : I2CRegister(name, address) {
+        setDevice(device);
+    }
+
+    uint32_t    read() {
+        uint32_t        value;
+
+        acquireBus();
+        value = getDevice()->readRegister32(getName());
+        releaseBus();
+
+        return value;
+    }
+    void        write(uint32_t data) {
+        acquireBus();
+        getDevice()->writeRegister32(getName(), data);
+        releaseBus();
+    }
+};
+
+class I2CRegister16bit : public I2CRegister
+{
+public:
+    I2CRegister16bit(I2CDevice * device) : I2CRegister() {
+        setDevice(device);
+    }
+    I2CRegister16bit(I2CDevice * device, const char * name, uint8_t address) : I2CRegister(name, address) {
+        setDevice(device);
+    }
+
+    uint16_t    read() {
+        uint16_t        value;
+
+        acquireBus();
+        value = getDevice()->readRegister16(getName());
+        releaseBus();
+
+        return value;
+    }
+    void        write(uint16_t data) {
+        acquireBus();
+        getDevice()->writeRegister16(getName(), data);
+        releaseBus();
+    }
+};
+
+class I2CRegister8bit : public I2CRegister
+{
+public:
+    I2CRegister8bit(I2CDevice * device) : I2CRegister() {
+        setDevice(device);
+    }
+    I2CRegister8bit(I2CDevice * device, const char * name, uint8_t address) : I2CRegister(name, address) {
+        setDevice(device);
+    }
+
+    uint8_t    read() {
+        uint8_t        value;
+
+        acquireBus();
+        value = getDevice()->readRegister8(getName());
+        releaseBus();
+
+        return value;
+    }
+    void        write(uint8_t data) {
+        acquireBus();
+        getDevice()->writeRegister8(getName(), data);
+        releaseBus();
+    }
 };
 
 #endif

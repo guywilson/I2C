@@ -15,11 +15,6 @@ I2CDevice::I2CDevice(const char * name, uint8_t busAddress)
     this->address = busAddress;
 }
 
-void I2CDevice::setBus(I2CBus * bus)
-{
-    this->bus = bus;
-}
-
 void I2CDevice::addRegister(I2CRegister * reg)
 {
     this->registers[reg->getName()] = reg;
@@ -60,13 +55,28 @@ uint16_t I2CDevice::readRegister16(const char * name)
     return value;
 }
 
+uint32_t I2CDevice::readRegister32(const char * name)
+{
+    uint32_t    value;
+    uint8_t     address;
+
+    I2CRegister * r = this->registers[name];
+
+    address = r->getAddress();
+
+    bus->busWrite(&address, 1);
+    bus->busRead(&value, 4);
+
+    return value;
+}
+
 void I2CDevice::readBlock(uint8_t address, uint8_t * data, uint32_t datalength)
 {
     bus->busWrite(&address, 1);
     bus->busRead(data, datalength);
 }
 
-void I2CDevice::writeRegister(const char * name, uint8_t value)
+void I2CDevice::writeRegister8(const char * name, uint8_t value)
 {
     uint8_t     address;
 
@@ -78,7 +88,7 @@ void I2CDevice::writeRegister(const char * name, uint8_t value)
     bus->busWrite(&value, 1);
 }
 
-void I2CDevice::writeRegister(const char * name, uint16_t value)
+void I2CDevice::writeRegister16(const char * name, uint16_t value)
 {
     uint8_t     address;
 
@@ -88,6 +98,18 @@ void I2CDevice::writeRegister(const char * name, uint16_t value)
 
     bus->busWrite(&address, 1);
     bus->busWrite(&value, 2);
+}
+
+void I2CDevice::writeRegister32(const char * name, uint32_t value)
+{
+    uint8_t     address;
+
+    I2CRegister * r = this->registers[name];
+
+    address = r->getAddress();
+
+    bus->busWrite(&address, 1);
+    bus->busWrite(&value, 4);
 }
 
 void I2CDevice::writeBlock(uint8_t address, uint8_t * data, uint32_t datalength)

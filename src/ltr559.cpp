@@ -8,12 +8,12 @@
 
 LTR559::LTR559() : I2CDevice(LTR559_DEVICE_NAME, LTR559_BUS_ADDRESS)
 {
-    ALSControl = new I2CRegister(LTR559_REG_ALSCONTROL_NAME, LTR559_REG_ALSCONTROL_ADDRESS);
-    ALSMeasureRate = new I2CRegister(LTR559_REG_ALSMEASURERT_NAME, LTR559_REG_ALSMEASURERT_ADDRESS);
-    ALSThresholdHi = new I2CRegister(LTR559_REG_ALSTHRESHI_NAME, LTR559_REG_ALSTHRESHI_ADDRESS);
-    ALSThresholdLo = new I2CRegister(LTR559_REG_ALSTHRESLO_NAME, LTR559_REG_ALSTHRESLO_ADDRESS);
-    ALSChannel0 = new I2CRegister(LTR559_REG_ALSCHANNEL0_NAME, LTR559_REG_ALSCHANNEL0_ADDRESS);
-    ALSChannel1 = new I2CRegister(LTR559_REG_ALSCHANNEL1_NAME, LTR559_REG_ALSCHANNEL1_ADDRESS);
+    ALSControl = new I2CRegister8bit(this, LTR559_REG_ALSCONTROL_NAME, LTR559_REG_ALSCONTROL_ADDRESS);
+    ALSMeasureRate = new I2CRegister8bit(this, LTR559_REG_ALSMEASURERT_NAME, LTR559_REG_ALSMEASURERT_ADDRESS);
+    ALSThresholdHi = new I2CRegister16bit(this, LTR559_REG_ALSTHRESHI_NAME, LTR559_REG_ALSTHRESHI_ADDRESS);
+    ALSThresholdLo = new I2CRegister16bit(this, LTR559_REG_ALSTHRESLO_NAME, LTR559_REG_ALSTHRESLO_ADDRESS);
+    ALSChannel0 = new I2CRegister16bit(this, LTR559_REG_ALSCHANNEL0_NAME, LTR559_REG_ALSCHANNEL0_ADDRESS);
+    ALSChannel1 = new I2CRegister16bit(this, LTR559_REG_ALSCHANNEL1_NAME, LTR559_REG_ALSCHANNEL1_ADDRESS);
 
     addRegister(ALSControl);
     addRegister(ALSMeasureRate);
@@ -37,33 +37,21 @@ void LTR559::initialise()
 {
     uint8_t     isResetting = 1;
 
-    bus.acquire(getName());
-    writeRegister(LTR559_REG_ALSCONTROL_NAME, (uint8_t)0x01);
-    bus.release(getName());
+    ALSControl->write(0x02);
 
     while (isResetting) {
         usleep(1000L);
 
-        bus.acquire(getName());
-        isResetting = (readRegister8(LTR559_REG_ALSCONTROL_NAME) & 0x02);
-        bus.release(getName());
+        isResetting = (ALSControl->read() & 0x02);
     }
 
-    bus.acquire(getName());
-    writeRegister(LTR559_REG_ALSCONTROL_NAME, (uint8_t)0x09);
-    bus.release(getName());
+    ALSControl->write(0x09);
 
-    bus.acquire(getName());
-    writeRegister(LTR559_REG_ALSMEASURERT_NAME, (uint8_t)0x08);
-    bus.release(getName());
+    ALSMeasureRate->write(0x08);
 
-    bus.acquire(getName());
-    writeRegister(LTR559_REG_ALSTHRESHI_NAME, (uint16_t)0xFFFF);
-    bus.release(getName());
+    ALSThresholdHi->write(0xFFFF);
 
-    bus.acquire(getName());
-    writeRegister(LTR559_REG_ALSTHRESLO_NAME, (uint16_t)0x0000);
-    bus.release(getName());
+    ALSThresholdLo->write(0x0000);
 }
 
 double LTR559::readLux()
@@ -77,13 +65,8 @@ double LTR559::readLux()
     int             ch0_c[4] = {17743,42785,5926,0};
     int             ch1_c[4] = {-11059,19548,-1185,0};
 
-    bus.acquire(getName());
-    alsval_ch0 = readRegister16(LTR559_REG_ALSCHANNEL0_NAME);
-    bus.release(getName());
-
-    bus.acquire(getName());
-    alsval_ch1 = readRegister16(LTR559_REG_ALSCHANNEL1_NAME);
-    bus.release(getName());
+    alsval_ch0 = ALSChannel0->read();
+    alsval_ch1 = ALSChannel1->read();
 
     if ((alsval_ch0 + alsval_ch1) == 0) {
             ratio = 101;

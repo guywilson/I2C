@@ -11,12 +11,15 @@ BME280::BME280() : I2CDevice(BME280_DEVICE_NAME, BME280_BUS_ADDRESS)
 {
     memset(&compensationData, 0x00, sizeof(BME280_COMPENSATIONDATA));
 
-    reset = new I2CRegister(BME280_REG_RESET_NAME, BME280_REG_RESET_ADDRESS);
-    chipID = new I2CRegister(BME280_REG_CHIPID_NAME, BME280_REG_CHIPID_ADDRESS);
-    status = new I2CRegister(BME280_REG_STATUS_NAME, BME280_REG_STATUS_ADDRESS);
-    config = new I2CRegister(BME280_REG_CONFIG_NAME, BME280_REG_CONFIG_ADDRESS);
-    ctrlMeasure = new I2CRegister(BME280_REG_CTRLMEAS_NAME, BME280_REG_CTRLMEAS_ADDRESS);
-    ctrlHumidity = new I2CRegister(BME280_REG_CTRLHUM_NAME, BME280_REG_CTRLHUM_ADDRESS);
+    reset = new I2CRegister8bit(this, BME280_REG_RESET_NAME, BME280_REG_RESET_ADDRESS);
+    chipID = new I2CRegister8bit(this, BME280_REG_CHIPID_NAME, BME280_REG_CHIPID_ADDRESS);
+    status = new I2CRegister8bit(this, BME280_REG_STATUS_NAME, BME280_REG_STATUS_ADDRESS);
+    config = new I2CRegister8bit(this, BME280_REG_CONFIG_NAME, BME280_REG_CONFIG_ADDRESS);
+    ctrlMeasure = new I2CRegister8bit(this, BME280_REG_CTRLMEAS_NAME, BME280_REG_CTRLMEAS_ADDRESS);
+    ctrlHumidity = new I2CRegister8bit(this, BME280_REG_CTRLHUM_NAME, BME280_REG_CTRLHUM_ADDRESS);
+    data = new I2CRegisterBlock(this, BME280_REG_DATA_NAME, BME280_REG_DATA_ADDRESS);
+    compensation1 = new I2CRegisterBlock(this, BME280_REG_COMP1_NAME, BME280_REG_COMP1_ADDRESS);
+    compensation2 = new I2CRegisterBlock(this, BME280_REG_COMP2_NAME, BME280_REG_COMP2_ADDRESS);
 
     addRegister(reset);
     addRegister(chipID);
@@ -24,10 +27,16 @@ BME280::BME280() : I2CDevice(BME280_DEVICE_NAME, BME280_BUS_ADDRESS)
     addRegister(config);
     addRegister(ctrlMeasure);
     addRegister(ctrlHumidity);
+    addRegister(data);
+    addRegister(compensation1);
+    addRegister(compensation2);
 }
 
 BME280::~BME280()
 {
+    delete compensation2;
+    delete compensation1;
+    delete data;
     delete ctrlHumidity;
     delete ctrlMeasure;
     delete config;
@@ -41,23 +50,13 @@ void BME280::initialise()
     /*
     ** Reset the device...
     */
-    bus.acquire(getName());
-    writeRegister(BME280_REG_RESET_NAME, (uint8_t)0xB6);
-    bus.release(getName());
+    reset->write(0xB6);
 
     usleep(100000L);
 
-    bus.acquire(getName());
-    writeRegister(BME280_REG_CTRLHUM_NAME, (uint8_t)0x05);
-    bus.release(getName());
-
-    bus.acquire(getName());
-    writeRegister(BME280_REG_CTRLMEAS_NAME, (uint8_t)0xB7);
-    bus.release(getName());
-
-    bus.acquire(getName());
-    writeRegister(BME280_REG_CONFIG_NAME, (uint8_t)0x88);
-    bus.release(getName());
+    ctrlHumidity->write(0x05);
+    ctrlMeasure->write(0xB7);
+    config->write(0x88);
 }
 
 void BME280::readTPH(BME280_TPH * tph)
@@ -70,9 +69,7 @@ void BME280::readTPH(BME280_TPH * tph)
     /*
     ** Read raw temperature, pressure and humidity...
     */
-    bus.acquire(this->getName());
-    readBlock(0xF7, buf, 8);
-    bus.release(this->getName());
+    data->read(buf, 8);
 
     /*
     ** Get raw values...
@@ -82,18 +79,10 @@ void BME280::readTPH(BME280_TPH * tph)
     humidity = (buf[6] << 8) + (buf[7]);
 
     /*
-    ** Read compensation data, part 1...
+    ** Read compensation data, part 1 & 2...
     */
-    bus.acquire(this->getName());
-    readBlock(0x88, buf, 25);
-    bus.release(this->getName());
-
-    /*
-    ** Read compensation data, part 2...
-    */
-    bus.acquire(this->getName());
-    readBlock(0xE1, &buf[25], 8);
-    bus.release(this->getName());
+    compensation1->read(buf, 25);
+    compensation2->read(&buf[25], 8);
 
     memcpy(&compensationData, buf, sizeof(BME280_COMPENSATIONDATA));
 

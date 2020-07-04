@@ -24,6 +24,15 @@
 #define BME280_REG_STATUS_NAME      "Status"
 #define BME280_REG_STATUS_ADDRESS   0xF3
 
+#define BME280_REG_DATA_NAME        "Data"
+#define BME280_REG_DATA_ADDRESS     0xF7
+
+#define BME280_REG_COMP1_NAME       "Compensation 1"
+#define BME280_REG_COMP1_ADDRESS    0x88
+
+#define BME280_REG_COMP2_NAME       "Compensation 2"
+#define BME280_REG_COMP2_ADDRESS    0xE1
+
 typedef struct
 {
     double      temperature;
@@ -65,12 +74,15 @@ private:
 
     I2CBus & bus = I2CBus::getInstance();
 
-    I2CRegister *               reset;
-    I2CRegister *               status;
-    I2CRegister *               config;
-    I2CRegister *               chipID;
-    I2CRegister *               ctrlMeasure;
-    I2CRegister *               ctrlHumidity;
+    I2CRegister8bit *               reset;
+    I2CRegister8bit *               status;
+    I2CRegister8bit *               config;
+    I2CRegister8bit *               chipID;
+    I2CRegister8bit *               ctrlMeasure;
+    I2CRegister8bit *               ctrlHumidity;
+    I2CRegisterBlock *              data;
+    I2CRegisterBlock *              compensation1;
+    I2CRegisterBlock *              compensation2;
 
     double getCompensatedTemperature(int32_t adcInput);
     double getCompensatedPressure(int32_t adcInput);
