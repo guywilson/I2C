@@ -180,47 +180,22 @@ double BME280::getCompensatedHumidity(int32_t adcInput)
     double humidity;
     double humidity_min = 0.0;
     double humidity_max = 100.0;
-    // double var1;
-    // double var2;
-    // double var3;
-    // double var4;
-    // double var5;
-    // double var6;
+    double var1;
+    double var2;
+    double var3;
+    double var4;
+    double var5;
+    double var6;
 
-    // var1 = ((double)temperatureCalibration) - (double)76800.0;
+    var1 = ((double)temperatureCalibration) - (double)76800.0;
+    var2 = (((double)compensationData.humidity4) * (double)64.0 + (((double)compensationData.humidity5) / (double)16384.0) * var1);
+    var3 = (double)adcInput - var2;
+    var4 = ((double)compensationData.humidity2) / (double)65536.0;
+    var5 = ((double)1.0 + (((double)compensationData.humidity3) / (double)67108864.0) * var1);
+    var6 = (double)1.0 + (((double)compensationData.humidity6) / (double)67108864.0) * var1 * var5;
+    var6 = var3 * var4 * (var5 * var6);
 
-    // var2 = (((double)compensationData.humidity4) * (double)64.0 + (((double)compensationData.humidity5) / (double)16384.0) * var1);
-
-    // var3 = (double)adcInput - var2;
-
-    // var4 = ((double)compensationData.humidity2) / (double)65536.0;
-
-    // var5 = ((double)1.0 + (((double)compensationData.humidity3) / (double)67108864.0) * var1);
-
-    // var6 = (double)1.0 + (((double)compensationData.humidity6) / (double)67108864.0) * var1 * var5;
-    // var6 = var3 * var4 * (var5 * var6);
-
-    // humidity = var6 * var6 * ((double)1.0 - (double)compensationData.humidity1) / (double)524288.0;
-
-    humidity = ((double)temperatureCalibration) - (double)76800.0;
-    humidity = 
-        ((double)adcInput - 
-        ((double)compensationData.humidity4 * 
-        (double)64.0 + 
-        (double)compensationData.humidity5 / 
-        (double)16384.0 * 
-        humidity)) * 
-        ((double)compensationData.humidity2 / 
-        (double)65536.0 * 
-        ((double)1.0 + 
-        (double)compensationData.humidity6 / 
-        (double)67108864.0 * 
-        humidity * 
-        ((double)1.0 + 
-        (double)compensationData.humidity3 / 
-        (double)67108864.0 * 
-        humidity)));
-    humidity = humidity * ((double)1.0 - (double)compensationData.humidity1 * humidity / (double)524288.0);
+    humidity = var6 * var6 * ((double)1.0 - (double)compensationData.humidity1) / (double)524288.0;
 
     if (humidity > humidity_max) {
         humidity = humidity_max;
