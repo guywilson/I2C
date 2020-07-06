@@ -49,25 +49,18 @@ void BME280::resetDevice()
 {
     _regReset->write(BME280_RESET_CMD);
 
-    uint8_t isReset = _regStatus->read() & 0x01;
-
-    while (isReset) {
+    while (isNVMCopyInProgress()) {
         usleep(2000L);
-
-        isReset = _regStatus->read() & 0x01;
     }
 }
 
 void BME280::initialise()
 {
-    uint8_t                     id;
     uint8_t                     buf[64];
     int                         i = 0;
 
     while (i < 5) {
-        id = _regChipID->read();
-
-        if (id == BME280_CHIP_ID) {
+        if (isChipIDValid()) {
             /*
             ** Reset the device...
             */
@@ -92,12 +85,88 @@ void BME280::initialise()
         throw i2c_error("Could not find BME280 on the I2C bus", __FILE__, __LINE__);
     }
 
-    _regCtrlHumidity->write(0x05);
-    _regCtrlMeasure->write(0xB7);
-    _regConfig->write(0x88);
+    setPressureOversampling(pos_4);
+    setTemperatureOversampling(tos_8);
+    setHumidityOversampling(hos_2);
+
+    setFilterCoefficient(filter_4);
+    setStandbyTime(t_sb_500);
+    setMode(pow_sleep);
+    // _regCtrlHumidity->write(0x05);
+    // _regCtrlMeasure->write(0xB7);
+    // _regConfig->write(0x88);
 }
 
-void BME280::readTPH(BME280_TPH * tph)
+void BME280::setMode(power_mode mode)
+{
+    uint8_t ctrl = _regCtrlMeasure->read();
+
+    ctrl |= mode;
+
+    _regCtrlMeasure->write(ctrl);
+}
+
+void BME280::setPressureOversampling(osrs_p pos)
+{
+    uint8_t ctrl = _regCtrlMeasure->read();
+
+    ctrl |= pos;
+    
+    _regCtrlMeasure->write(ctrl);
+}
+
+void BME280::setTemperatureOversampling(osrs_t tos)
+{
+    uint8_t ctrl = _regCtrlMeasure->read();
+
+    ctrl |= tos;
+    
+    _regCtrlMeasure->write(ctrl);
+}
+
+void BME280::setHumidityOversampling(osrs_h hos)
+{
+    uint8_t ctrl = _regCtrlHumidity->read();
+
+    ctrl |= hos;
+    
+    _regCtrlHumidity->write(ctrl);
+}
+
+void BME280::setStandbyTime(t_sb tm)
+{
+    uint8_t cfg = _regConfig->read();
+
+    cfg |= tm;
+    
+    _regConfig->write(cfg);
+}
+
+void BME280::setFilterCoefficient(filter f)
+{
+    uint8_t cfg = _regConfig->read();
+
+    cfg |= f;
+    
+    _regConfig->write(cfg);
+}
+
+bool BME280::isChipIDValid()
+{
+    return (_regChipID->read() == BME280_CHIP_ID);
+}
+
+bool BME280::isNVMCopyInProgress()
+{
+    return ((_regStatus->read() & 0x01) == 0x01);
+}
+
+bool BME280::isMeasuring()
+{
+    return ((_regStatus->read() & 0x08) == 0x08);
+}
+
+void BME280::getData(BME280_TPH * tph)
 {
     uint8_t                     buf[64];
     int32_t                     pressure;

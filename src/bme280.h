@@ -98,9 +98,71 @@ public:
     BME280();
     virtual ~BME280();
 
-    virtual void initialise();
+    enum power_mode {
+        pow_sleep =     0b00000000,
+        pow_forced =    0b00000001,
+        pow_normal =    0b00000011
+    };
 
-    void readTPH(BME280_TPH * tph);
+    enum osrs_p {
+        pos_skipped =   0b00000000,
+        pos_1 =         0b00000100,
+        pos_2 =         0b00001000,
+        pos_4 =         0b00001100,
+        pos_8 =         0b00010000,
+        pos_16 =        0b00010100
+    };
+
+    enum osrs_t {
+        tos_skipped =   0b00000000,
+        tos_1 =         0b00100000,
+        tos_2 =         0b01000000,
+        tos_4 =         0b01100000,
+        tos_8 =         0b10000000,
+        tos_16 =        0b10100000
+    };
+
+    enum osrs_h {
+        hos_skipped =   0b00000000,
+        hos_1 =         0b00000001,
+        hos_2 =         0b00000010,
+        hos_4 =         0b00000011,
+        hos_8 =         0b00000100,
+        hos_16 =        0b00000101
+    };
+
+    enum t_sb {
+        t_sb_0_5 =      0b00000000,
+        t_sb_62_5 =     0b00100000,
+        t_sb_125 =      0b01000000,
+        t_sb_500 =      0b10000000,
+        t_sb_1000 =     0b10100000,
+        t_sb_10 =       0b11000000,
+        t_sb_20 =       0b11100000
+    };
+
+    enum filter {
+        filter_off =    0b00000000,
+        filter_2 =      0b00000100,
+        filter_4 =      0b00001000,
+        filter_8 =      0b00001100,
+        filter_16 =     0b00010000
+    };
+
+    virtual void    initialise();
+
+    void            setMode(power_mode mode);
+    void            setPressureOversampling(osrs_p pos);
+    void            setTemperatureOversampling(osrs_t tos);
+    void            setHumidityOversampling(osrs_h hos);
+    void            setFilterCoefficient(filter f);
+    void            setStandbyTime(t_sb tm);
+
+    bool            isChipIDValid();
+    bool            isNVMCopyInProgress();
+    bool            isMeasuring();
+
+    void            getData(BME280_TPH * tph);
 };
 
 #endif

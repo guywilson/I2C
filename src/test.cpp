@@ -56,7 +56,7 @@ int main(void)
         bus.attachDevice(bme280);
         bus.attachDevice(ltr559);
 
-        bme280->readTPH(&tph);
+        bme280->getData(&tph);
 
         double lightLevel = ltr559->readLux();
 
