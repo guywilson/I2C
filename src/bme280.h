@@ -6,6 +6,8 @@
 #define BME280_DEVICE_NAME          "BME280"
 #define BME280_BUS_ADDRESS          0X76
 
+#define BME280_CHIP_ID              0x60
+
 #define BME280_RESET_CMD            0xB6
 
 #define BME280_REG_RESET_NAME       "Reset"
@@ -76,15 +78,15 @@ private:
 
     I2CBus & bus = I2CBus::getInstance();
 
-    I2CRegister8bit *               reset;
-    I2CRegister8bit *               status;
-    I2CRegister8bit *               config;
-    I2CRegister8bit *               chipID;
-    I2CRegister8bit *               ctrlMeasure;
-    I2CRegister8bit *               ctrlHumidity;
-    I2CRegisterBlock *              data;
-    I2CRegisterBlock *              compensation1;
-    I2CRegisterBlock *              compensation2;
+    I2CRegister8bit *               _regReset;
+    I2CRegister8bit *               _regStatus;
+    I2CRegister8bit *               _regConfig;
+    I2CRegister8bit *               _regChipID;
+    I2CRegister8bit *               _regCtrlMeasure;
+    I2CRegister8bit *               _regCtrlHumidity;
+    I2CRegisterBlock *              _regData;
+    I2CRegisterBlock *              _regCompensation1;
+    I2CRegisterBlock *              _regCompensation2;
 
     double getCompensatedTemperature(int32_t adcInput);
     double getCompensatedPressure(int32_t adcInput);
