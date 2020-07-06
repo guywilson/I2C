@@ -59,6 +59,8 @@ void BME280::initialise()
     uint8_t                     buf[64];
     int                         i = 0;
 
+    printf("Initialising BME280\n");
+    
     while (i < 5) {
         if (isChipIDValid()) {
             /*
@@ -85,12 +87,12 @@ void BME280::initialise()
         throw i2c_error("Could not find BME280 on the I2C bus", __FILE__, __LINE__);
     }
 
-    setPressureOversampling(pos_4);
-    setTemperatureOversampling(tos_8);
-    setHumidityOversampling(hos_2);
+    setPressureOversampling(pos_1);
+    setTemperatureOversampling(tos_1);
+    setHumidityOversampling(hos_1);
 
-    setFilterCoefficient(filter_4);
-    setStandbyTime(t_sb_500);
+    setFilterCoefficient(filter_off);
+    setStandbyTime(t_sb_0_5);
     setMode(pow_forced);
     // _regCtrlHumidity->write(0x05);
     // _regCtrlMeasure->write(0xB7);

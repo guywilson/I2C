@@ -60,9 +60,14 @@ int main(void)
 
         double lightLevel = ltr559->readLux();
 
-        printf("Temperature: %.2f\n", (tph.temperature - ((getCPUTemp() - tph.temperature) / TEMP_COMPENSATION_FACTOR)));
+        double correctedTemperature = (tph.temperature - ((getCPUTemp() - tph.temperature) / TEMP_COMPENSATION_FACTOR));
+
+        double dewPoint = tph.temperature - (((double)100.0 - tph.humidity) / (double)5.0);
+        double humidity = (double)100.0 - ((double)5.0 * (correctedTemperature - dewPoint));
+
+        printf("Temperature: %.2f\n", correctedTemperature);
         printf("Pressure: %.2f\n", tph.pressure);
-        printf("Humidity: %.2f\n", tph.humidity);
+        printf("Humidity: %.2f\n", humidity);
         printf("Light level: %.2f\n\n", lightLevel);
 
         delete ltr559;
