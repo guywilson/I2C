@@ -91,7 +91,7 @@ void BME280::initialise()
 
     setFilterCoefficient(filter_4);
     setStandbyTime(t_sb_500);
-    setMode(pow_sleep);
+    setMode(pow_forced);
     // _regCtrlHumidity->write(0x05);
     // _regCtrlMeasure->write(0xB7);
     // _regConfig->write(0x88);
