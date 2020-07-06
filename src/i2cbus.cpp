@@ -47,6 +47,8 @@ void I2CBus::attachDevice(I2CDevice * device)
     this->devices[device->getName()] = device;
 
     device->setBus(this);
+
+    device->initialise();
 }
 
 void I2CBus::detachDevice(const char * name)

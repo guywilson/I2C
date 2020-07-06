@@ -6,6 +6,8 @@
 #define BME280_DEVICE_NAME          "BME280"
 #define BME280_BUS_ADDRESS          0X76
 
+#define BME280_RESET_CMD            0xB6
+
 #define BME280_REG_RESET_NAME       "Reset"
 #define BME280_REG_RESET_ADDRESS    0xE0
 
@@ -88,11 +90,13 @@ private:
     double getCompensatedPressure(int32_t adcInput);
     double getCompensatedHumidity(int32_t adcInput);
 
+    void resetDevice();
+
 public:
     BME280();
-    ~BME280();
+    virtual ~BME280();
 
-    void initialise();
+    virtual void initialise();
 
     void readTPH(BME280_TPH * tph);
 };

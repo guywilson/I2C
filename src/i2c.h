@@ -38,6 +38,8 @@ public:
     I2CDevice() {}
     I2CDevice(const char * name, uint8_t busAddress);
 
+    virtual ~I2CDevice() {}
+
     uint8_t         getAddress() {
         return this->address;
     }
@@ -52,6 +54,8 @@ public:
     void setBus(I2CBus * bus) {
         this->bus = bus;
     }
+
+    virtual void    initialise() = 0;
 
     uint8_t         readRegister8(const char * name);
     uint16_t        readRegister16(const char * name);

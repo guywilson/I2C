@@ -45,14 +45,25 @@ BME280::~BME280()
     delete reset;
 }
 
+void BME280::resetDevice()
+{
+    reset->write(BME280_RESET_CMD);
+
+    uint8_t isReset = status->read() & 0x01;
+
+    while (isReset) {
+        usleep(2000L);
+
+        isReset = status->read() & 0x01;
+    }
+}
+
 void BME280::initialise()
 {
     /*
     ** Reset the device...
     */
-    reset->write(0xB6);
-
-    usleep(100000L);
+    resetDevice();
 
     ctrlHumidity->write(0x05);
     ctrlMeasure->write(0xB7);

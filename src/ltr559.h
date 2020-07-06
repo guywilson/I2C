@@ -42,7 +42,7 @@ public:
     LTR559();
     ~LTR559();
 
-    void initialise();
+    virtual void initialise();
 
     double readLux();
 };
