@@ -91,11 +91,7 @@ void BME280::initialise()
     setPressureOversampling(pos_1);
     setTemperatureOversampling(tos_1);
 
-    // setMode(pow_forced);
-    
-    // _regCtrlHumidity->write(0x05);
-    // _regCtrlMeasure->write(0xB7);
-    // _regConfig->write(0x88);
+    setFilterCoefficient(filter_4);
 }
 
 void BME280::setMode(power_mode mode)
@@ -201,7 +197,7 @@ void BME280::getData(BME280_TPH * tph)
     setMode(pow_forced);
 
     usleep(200000L);
-    
+
     /*
     ** Read raw temperature, pressure and humidity...
     */
