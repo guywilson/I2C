@@ -92,14 +92,6 @@ void BME280::initialise()
     setHumidityOversampling(hos_1);
     setPressureOversampling(pos_1);
     setTemperatureOversampling(tos_1);
-
-    uint8_t ctrl = _regCtrlMeasure->read();
-    uint8_t hctrl = _regCtrlHumidity->read();
-    uint8_t cfg = _regConfig->read();
-
-    printf("Control reg = 0x%02X\n", ctrl);
-    printf("Hum Control reg = 0x%02X\n", hctrl);
-    printf("Config reg = 0x%02X\n", cfg);
 }
 
 void BME280::setMode(power_mode mode)
@@ -179,9 +171,9 @@ void BME280::getData(BME280_TPH * tph)
     tph->pressure = getCompensatedPressure(pressure);
     tph->humidity = getCompensatedHumidity(humidity);
 
-    printf("Temperature: %d, 0x%08X, %.2f\n", temperature, temperature, tph->temperature);
-    printf("Pressure: %d, 0x%08X, %.2f\n", pressure, pressure, tph->pressure);
-    printf("Humidity: %d, 0x%04X, %.2f\n", humidity, humidity, tph->humidity);
+    // printf("Temperature: %d, 0x%08X, %.2f\n", temperature, temperature, tph->temperature);
+    // printf("Pressure: %d, 0x%08X, %.2f\n", pressure, pressure, tph->pressure);
+    // printf("Humidity: %d, 0x%04X, %.2f\n", humidity, humidity, tph->humidity);
 }
 
 double BME280::getCompensatedTemperature(int32_t adcInput)
