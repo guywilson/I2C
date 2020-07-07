@@ -89,8 +89,12 @@ void BME280::initialise()
 
     setMode(pow_sleep);
 
+    usleep(200000L);
+
     setStandbyTime(t_sb_0_5);
     setFilterCoefficient(filter_off);
+
+    usleep(200000L);
 
     setHumidityOversampling(hos_1);
     setPressureOversampling(pos_1);
