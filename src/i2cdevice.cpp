@@ -78,39 +78,39 @@ void I2CDevice::readBlock(uint8_t address, uint8_t * data, uint32_t datalength)
 
 void I2CDevice::writeRegister8(const char * name, uint8_t value)
 {
-    uint8_t     address;
+    uint8_t     writeBuffer[1 + sizeof(value)];
 
     I2CRegister * r = this->registers[name];
 
-    address = r->getAddress();
+    writeBuffer[0] = r->getAddress();
+    writeBuffer[1] = value;
 
     printf("Writing value 0x%02X to address 0x%02X\n", value, address);
-    bus->busWrite(&address, 1);
-    bus->busWrite(&value, 1);
+    bus->busWrite(&writeBuffer, 1 + sizeof(value));
 }
 
 void I2CDevice::writeRegister16(const char * name, uint16_t value)
 {
-    uint8_t     address;
+    uint8_t     writeBuffer[1 + sizeof(value)];
 
     I2CRegister * r = this->registers[name];
 
-    address = r->getAddress();
+    writeBuffer[0] = r->getAddress();
+    memcpy(&writeBuffer[1], &value, sizeof(value));
 
-    bus->busWrite(&address, 1);
-    bus->busWrite(&value, 2);
+    bus->busWrite(&writeBuffer, 1 + sizeof(value));
 }
 
 void I2CDevice::writeRegister32(const char * name, uint32_t value)
 {
-    uint8_t     address;
+    uint8_t     writeBuffer[1 + sizeof(value)];
 
     I2CRegister * r = this->registers[name];
 
-    address = r->getAddress();
+    writeBuffer[0] = r->getAddress();
+    memcpy(&writeBuffer[1], &value, sizeof(value));
 
-    bus->busWrite(&address, 1);
-    bus->busWrite(&value, 4);
+    bus->busWrite(&writeBuffer, 1 + sizeof(value));
 }
 
 void I2CDevice::writeBlock(uint8_t address, uint8_t * data, uint32_t datalength)
