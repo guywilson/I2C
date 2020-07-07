@@ -91,7 +91,7 @@ void BME280::initialise()
     setPressureOversampling(pos_1);
     setTemperatureOversampling(tos_1);
 
-   setFilterCoefficient(filter_4);
+    setFilterCoefficient(filter_4);
 }
 
 void BME280::setMode(power_mode mode)
@@ -148,7 +148,7 @@ void BME280::getData(BME280_TPH * tph)
 
     setMode(pow_forced);
 
-    usleep(500000L);
+    usleep(200000L);
 
     /*
     ** Read raw temperature, pressure and humidity...
@@ -165,6 +165,10 @@ void BME280::getData(BME280_TPH * tph)
     tph->temperature = getCompensatedTemperature(temperature);
     tph->pressure = getCompensatedPressure(pressure);
     tph->humidity = getCompensatedHumidity(humidity);
+
+    printf("Temperature: %d, 0x%08X, %.2f\n", temperature, temperature, tph->temperature);
+    printf("Pressure: %d, 0x%08X, %.2f\n", pressure, pressure, tph->pressure);
+    printf("Humidity: %d, 0x%04X, %.2f\n", humidity, humidity, tph->humidity);
 }
 
 double BME280::getCompensatedTemperature(int32_t adcInput)
