@@ -87,11 +87,11 @@ void BME280::initialise()
         throw i2c_error("Could not find BME280 on the I2C bus", __FILE__, __LINE__);
     }
 
+    setFilterCoefficient(filter_4);
+
     setHumidityOversampling(hos_1);
     setPressureOversampling(pos_1);
     setTemperatureOversampling(tos_1);
-
-    setFilterCoefficient(filter_4);
 }
 
 void BME280::setMode(power_mode mode)
@@ -154,6 +154,11 @@ void BME280::getData(BME280_TPH * tph)
     ** Read raw temperature, pressure and humidity...
     */
     _regData->read(buf, 8);
+
+    /*
+    ** Reset the filter...
+    */
+    setFilterCoefficient(filter_4);
 
     /*
     ** Get raw values...
