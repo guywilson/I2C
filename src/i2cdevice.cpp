@@ -84,6 +84,7 @@ void I2CDevice::writeRegister8(const char * name, uint8_t value)
 
     address = r->getAddress();
 
+    printf("Writing value 0x%02X to address 0x%02X\n", value, address);
     bus->busWrite(&address, 1);
     bus->busWrite(&value, 1);
 }
