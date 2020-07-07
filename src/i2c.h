@@ -255,6 +255,7 @@ public:
         value &= ~mask;
         value |= newValue;
 
+        printf("Writing value 0x%02X to register %s\n", value, getName());
         write(value);
     }
     uint8_t    read() {
