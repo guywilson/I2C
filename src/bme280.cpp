@@ -92,6 +92,14 @@ void BME280::initialise()
     setHumidityOversampling(hos_1);
     setPressureOversampling(pos_1);
     setTemperatureOversampling(tos_1);
+
+    uint8_t ctrl = _regCtrlMeasure->read();
+    uint8_t hctrl = _regCtrlHumidity->read();
+    uint8_t cfg = _regConfig->read();
+
+    printf("Control reg = 0x%02X\n", ctrl);
+    printf("Hum Control reg = 0x%02X\n", hctrl);
+    printf("Config reg = 0x%02X\n", cfg);
 }
 
 void BME280::setMode(power_mode mode)
