@@ -74,7 +74,7 @@ class BME280 : public I2CDevice
 {
 private:
     BME280_COMPENSATIONDATA     compensationData;
-    int32_t                     temperatureCalibration;
+    int32_t                     temperatureCalibration = 0;
 
     I2CBus & bus = I2CBus::getInstance();
 
