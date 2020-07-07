@@ -171,9 +171,9 @@ void BME280::getData(BME280_TPH * tph)
     /*
     ** Get raw values...
     */
-    pressure = (buf[0] << 12) + (buf[1] << 4) + ((buf[2] >> 4) & 0x0F);
-    temperature = (buf[3] << 12) + (buf[4] << 4) + ((buf[5] >> 4) & 0x0F);
-    humidity = (buf[6] << 8) + (buf[7]);
+    pressure = (buf[0] << 12) | (buf[1] << 4) | ((buf[2] >> 4) & 0x0F);
+    temperature = (buf[3] << 12) | (buf[4] << 4) | ((buf[5] >> 4) & 0x0F);
+    humidity = (buf[6] << 8) | (buf[7]);
 
     tph->temperature = getCompensatedTemperature(temperature);
     tph->pressure = getCompensatedPressure(pressure);

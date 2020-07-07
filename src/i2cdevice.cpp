@@ -115,6 +115,18 @@ void I2CDevice::writeRegister32(const char * name, uint32_t value)
 
 void I2CDevice::writeBlock(uint8_t address, uint8_t * data, uint32_t datalength)
 {
-    bus->busWrite(&address, 1);
-    bus->busWrite(data, datalength);
+    uint8_t *   writeBuffer;
+
+    writeBuffer = (uint8_t *)malloc(datalength + 1);
+
+    if (writeBuffer == NULL) {
+        throw i2c_error(i2c_error::buildMsg("Failed to allocate %u bytes for write buffer", datalength + 1), __FILE__, __LINE__);
+    }
+
+    writeBuffer[0] = address;
+    memcpy(&writeBuffer[1], data, datalength);
+
+    bus->busWrite(writeBuffer, datalength + 1);
+
+    free(writeBuffer);
 }
