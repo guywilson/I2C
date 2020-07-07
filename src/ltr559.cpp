@@ -8,50 +8,50 @@
 
 LTR559::LTR559() : I2CDevice(LTR559_DEVICE_NAME, LTR559_BUS_ADDRESS)
 {
-    ALSControl = new I2CRegister8bit(this, LTR559_REG_ALSCONTROL_NAME, LTR559_REG_ALSCONTROL_ADDRESS);
-    ALSMeasureRate = new I2CRegister8bit(this, LTR559_REG_ALSMEASURERT_NAME, LTR559_REG_ALSMEASURERT_ADDRESS);
-    ALSThresholdHi = new I2CRegister16bit(this, LTR559_REG_ALSTHRESHI_NAME, LTR559_REG_ALSTHRESHI_ADDRESS);
-    ALSThresholdLo = new I2CRegister16bit(this, LTR559_REG_ALSTHRESLO_NAME, LTR559_REG_ALSTHRESLO_ADDRESS);
-    ALSChannel0 = new I2CRegister16bit(this, LTR559_REG_ALSCHANNEL0_NAME, LTR559_REG_ALSCHANNEL0_ADDRESS);
-    ALSChannel1 = new I2CRegister16bit(this, LTR559_REG_ALSCHANNEL1_NAME, LTR559_REG_ALSCHANNEL1_ADDRESS);
+    _regALSControl = new I2CRegister8bit(this, LTR559_REG_ALSCONTROL_NAME, LTR559_REG_ALSCONTROL_ADDRESS);
+    _regALSMeasureRate = new I2CRegister8bit(this, LTR559_REG_ALSMEASURERT_NAME, LTR559_REG_ALSMEASURERT_ADDRESS);
+    _regALSThresholdHi = new I2CRegister16bit(this, LTR559_REG_ALSTHRESHI_NAME, LTR559_REG_ALSTHRESHI_ADDRESS);
+    _regALSThresholdLo = new I2CRegister16bit(this, LTR559_REG_ALSTHRESLO_NAME, LTR559_REG_ALSTHRESLO_ADDRESS);
+    _regALSChannel0 = new I2CRegister16bit(this, LTR559_REG_ALSCHANNEL0_NAME, LTR559_REG_ALSCHANNEL0_ADDRESS);
+    _regALSChannel1 = new I2CRegister16bit(this, LTR559_REG_ALSCHANNEL1_NAME, LTR559_REG_ALSCHANNEL1_ADDRESS);
 
-    addRegister(ALSControl);
-    addRegister(ALSMeasureRate);
-    addRegister(ALSThresholdHi);
-    addRegister(ALSThresholdLo);
-    addRegister(ALSChannel0);
-    addRegister(ALSChannel1);
+    addRegister(_regALSControl);
+    addRegister(_regALSMeasureRate);
+    addRegister(_regALSThresholdHi);
+    addRegister(_regALSThresholdLo);
+    addRegister(_regALSChannel0);
+    addRegister(_regALSChannel1);
 }
 
 LTR559::~LTR559()
 {
-    delete ALSChannel1;
-    delete ALSChannel0;
-    delete ALSThresholdLo;
-    delete ALSThresholdHi;
-    delete ALSMeasureRate;
-    delete ALSControl;
+    delete _regALSChannel1;
+    delete _regALSChannel0;
+    delete _regALSThresholdLo;
+    delete _regALSThresholdHi;
+    delete _regALSMeasureRate;
+    delete _regALSControl;
 }
 
 void LTR559::initialise()
 {
     uint8_t     isResetting = 1;
 
-    ALSControl->write(0x02);
+    _regALSControl->write(0x02);
 
     while (isResetting) {
         usleep(1000L);
 
-        isResetting = (ALSControl->read() & 0x02);
+        isResetting = (_regALSControl->read() & 0x02);
     }
 
-    ALSControl->write(0x09);
+    _regALSControl->write(0x09);
 
-    ALSMeasureRate->write(0x08);
+    _regALSMeasureRate->write(0x08);
 
-    ALSThresholdHi->write(0xFFFF);
+    _regALSThresholdHi->write(0xFFFF);
 
-    ALSThresholdLo->write(0x0000);
+    _regALSThresholdLo->write(0x0000);
 }
 
 double LTR559::readLux()
@@ -65,8 +65,8 @@ double LTR559::readLux()
     int             ch0_c[4] = {17743,42785,5926,0};
     int             ch1_c[4] = {-11059,19548,-1185,0};
 
-    alsval_ch0 = ALSChannel0->read();
-    alsval_ch1 = ALSChannel1->read();
+    alsval_ch0 = _regALSChannel0->read();
+    alsval_ch1 = _regALSChannel1->read();
 
     if ((alsval_ch0 + alsval_ch1) == 0) {
             ratio = 101;

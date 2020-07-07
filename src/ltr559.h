@@ -31,12 +31,12 @@ class LTR559 : public I2CDevice
 private:
     I2CBus & bus = I2CBus::getInstance();
 
-    I2CRegister8bit *   ALSControl;
-    I2CRegister8bit *   ALSMeasureRate;
-    I2CRegister16bit *  ALSThresholdHi;
-    I2CRegister16bit *  ALSThresholdLo;
-    I2CRegister16bit *  ALSChannel0;
-    I2CRegister16bit *  ALSChannel1;
+    I2CRegister8bit *   _regALSControl;
+    I2CRegister8bit *   _regALSMeasureRate;
+    I2CRegister16bit *  _regALSThresholdHi;
+    I2CRegister16bit *  _regALSThresholdLo;
+    I2CRegister16bit *  _regALSChannel0;
+    I2CRegister16bit *  _regALSChannel1;
 
 public:
     LTR559();
