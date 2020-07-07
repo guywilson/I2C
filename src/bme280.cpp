@@ -87,20 +87,20 @@ void BME280::initialise()
         throw i2c_error("Could not find BME280 on the I2C bus", __FILE__, __LINE__);
     }
 
-    setMode(pow_sleep);
+    // setMode(pow_sleep);
 
-    usleep(200000L);
+    // usleep(200000L);
 
-    setStandbyTime(t_sb_0_5);
-    setFilterCoefficient(filter_off);
+    // setStandbyTime(t_sb_0_5);
+    // setFilterCoefficient(filter_off);
 
-    usleep(200000L);
+    // usleep(200000L);
 
-    setHumidityOversampling(hos_1);
-    setPressureOversampling(pos_1);
-    setTemperatureOversampling(tos_1);
+    // setHumidityOversampling(hos_1);
+    // setPressureOversampling(pos_1);
+    // setTemperatureOversampling(tos_1);
 
-    setMode(pow_forced);
+    // setMode(pow_forced);
     
     // _regCtrlHumidity->write(0x05);
     // _regCtrlMeasure->write(0xB7);
