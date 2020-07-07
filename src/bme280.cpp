@@ -96,80 +96,32 @@ void BME280::initialise()
 
 void BME280::setMode(power_mode mode)
 {
-    uint8_t mask = 0x03;
-
-    uint8_t ctrl = _regCtrlMeasure->read();
-
-    ctrl &= ~mask;
-
-    ctrl |= mode;
-
-    _regCtrlMeasure->write(ctrl);
+    _regCtrlMeasure->setBits(0x03, mode);
 }
 
 void BME280::setPressureOversampling(osrs_p pos)
 {
-    uint8_t mask = 0x1C;
-
-    uint8_t ctrl = _regCtrlMeasure->read();
-
-    ctrl &= ~mask;
-
-    ctrl |= pos;
-    
-    _regCtrlMeasure->write(ctrl);
+    _regCtrlMeasure->setBits(0xC1, pos);
 }
 
 void BME280::setTemperatureOversampling(osrs_t tos)
 {
-    uint8_t mask = 0xE0;
-
-    uint8_t ctrl = _regCtrlMeasure->read();
-
-    ctrl &= ~mask;
-
-    ctrl |= tos;
-    
-    _regCtrlMeasure->write(ctrl);
+    _regCtrlMeasure->setBits(0xE0, tos);
 }
 
 void BME280::setHumidityOversampling(osrs_h hos)
 {
-    uint8_t mask = 0x07;
-
-    uint8_t ctrl = _regCtrlHumidity->read();
-
-    ctrl &= ~mask;
-
-    ctrl |= hos;
-    
-    _regCtrlHumidity->write(ctrl);
+    _regCtrlHumidity->setBits(0x07, hos);
 }
 
 void BME280::setStandbyTime(t_sb tm)
 {
-    uint8_t mask = 0xE0;
-
-    uint8_t cfg = _regConfig->read();
-
-    cfg &= ~mask;
-
-    cfg |= tm;
-    
-    _regConfig->write(cfg);
+    _regConfig->setBits(0xE0, tm);
 }
 
 void BME280::setFilterCoefficient(filter f)
 {
-    uint8_t mask = 0x1C;
-
-    uint8_t cfg = _regConfig->read();
-
-    cfg &= ~mask;
-    
-    cfg |= f;
-    
-    _regConfig->write(cfg);
+    _regConfig->setBits(0x1C, f);
 }
 
 bool BME280::isChipIDValid()

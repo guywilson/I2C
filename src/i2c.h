@@ -181,6 +181,14 @@ public:
         setDevice(device);
     }
 
+    void       setBits(uint32_t mask, uint32_t newValue) {
+        uint32_t value = read();
+
+        value &= ~mask;
+        value |= newValue;
+
+        write(value);
+    }
     uint32_t    read() {
         uint32_t        value;
 
@@ -207,6 +215,14 @@ public:
         setDevice(device);
     }
 
+    void       setBits(uint16_t mask, uint16_t newValue) {
+        uint16_t value = read();
+
+        value &= ~mask;
+        value |= newValue;
+
+        write(value);
+    }
     uint16_t    read() {
         uint16_t        value;
 
@@ -233,6 +249,14 @@ public:
         setDevice(device);
     }
 
+    void       setBits(uint8_t mask, uint8_t newValue) {
+        uint8_t value = read();
+
+        value &= ~mask;
+        value |= newValue;
+
+        write(value);
+    }
     uint8_t    read() {
         uint8_t        value;
 
