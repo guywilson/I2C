@@ -91,7 +91,7 @@ void BME280::initialise()
     setPressureOversampling(pos_1);
     setTemperatureOversampling(tos_1);
 
-    setFilterCoefficient(filter_4);
+//    setFilterCoefficient(filter_4);
 }
 
 void BME280::setMode(power_mode mode)
