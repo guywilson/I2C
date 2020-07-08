@@ -5,7 +5,7 @@
 #ifndef _INCL_LTR559
 #define _INCL_LTR559
 
-#define LTR559_DEVICE_NAME              "LTR559"
+#define LTR559_DEVICE_NAME              "LTR559_ALS"
 #define LTR559_BUS_ADDRESS              0x23
 
 #define LTR559_REG_ALSCONTROL_NAME      "ALS Control Register"
@@ -26,7 +26,7 @@
 #define LTR559_REG_ALSCHANNEL1_NAME     "ALS Channel 1"
 #define LTR559_REG_ALSCHANNEL1_ADDRESS  0x88
 
-class LTR559 : public I2CDevice
+class LTR559_ALS : public I2CDevice
 {
 private:
     I2CBus & bus = I2CBus::getInstance();
@@ -39,12 +39,51 @@ private:
     I2CRegister16bit *  _regALSChannel1;
 
 public:
-    LTR559();
-    ~LTR559();
+    LTR559_ALS();
+    ~LTR559_ALS();
 
-    virtual void initialise();
+    enum ALS_gain {
+        alsg_1 =        0b00000000,
+        alsg_2 =        0b00000100,
+        alsg_4 =        0b00001000,
+        alsg_8 =        0b00001100,
+        alsg_48 =       0b00011000,
+        alsg_96 =       0b00011100
+    };
 
-    double readLux();
+    enum ALS_mode {
+        mode_standby =  0b00000000,
+        mode_active =   0b00000001
+    };
+
+    enum ALS_int_time {
+        int_t_100 =     0b00000000,
+        int_t_50 =      0b00000100,
+        int_t_200 =     0b00001000,
+        int_t_400 =     0b00001100,
+        int_t_150 =     0b00010000,
+        int_t_250 =     0b00010100,
+        int_t_300 =     0b00011000,
+        int_t_350 =     0b00011100
+    };
+
+    enum ALS_meas_rate {
+        mr_50 =         0b00000000,
+        mr_100 =        0b00000001,
+        mr_200 =        0b00000010,
+        mr_500 =        0b00000011,
+        mr_1000 =       0b00000100,
+        mr_2000 =       0b00000101
+    };
+
+    virtual void    initialise();
+
+    void            setALSGain(ALS_gain g);
+    void            setALSMode(ALS_mode m);
+    void            setALSIntegrationTime(ALS_int_time t);
+    void            setALSMeasureRate(ALS_meas_rate r);
+
+    double          readLux();
 };
 
 #endif

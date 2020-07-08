@@ -6,7 +6,7 @@
 #include "i2c.h"
 #include "ltr559.h"
 
-LTR559::LTR559() : I2CDevice(LTR559_DEVICE_NAME, LTR559_BUS_ADDRESS)
+LTR559_ALS::LTR559_ALS() : I2CDevice(LTR559_DEVICE_NAME, LTR559_BUS_ADDRESS)
 {
     _regALSControl = new I2CRegister8bit(this, LTR559_REG_ALSCONTROL_NAME, LTR559_REG_ALSCONTROL_ADDRESS);
     _regALSMeasureRate = new I2CRegister8bit(this, LTR559_REG_ALSMEASURERT_NAME, LTR559_REG_ALSMEASURERT_ADDRESS);
@@ -23,7 +23,7 @@ LTR559::LTR559() : I2CDevice(LTR559_DEVICE_NAME, LTR559_BUS_ADDRESS)
     addRegister(_regALSChannel1);
 }
 
-LTR559::~LTR559()
+LTR559_ALS::~LTR559_ALS()
 {
     delete _regALSChannel1;
     delete _regALSChannel0;
@@ -33,7 +33,7 @@ LTR559::~LTR559()
     delete _regALSControl;
 }
 
-void LTR559::initialise()
+void LTR559_ALS::initialise()
 {
     uint8_t     isResetting = 1;
 
@@ -45,16 +45,38 @@ void LTR559::initialise()
         isResetting = (_regALSControl->read() & 0x02);
     }
 
-    _regALSControl->write(0x09);
+    setALSGain(alsg_4);
 
-    _regALSMeasureRate->write(0x08);
+    setALSIntegrationTime(int_t_100);
+    setALSMeasureRate(mr_100);
 
     _regALSThresholdHi->write(0xFFFF);
-
     _regALSThresholdLo->write(0x0000);
+
+    setALSMode(mode_active);
 }
 
-double LTR559::readLux()
+void LTR559_ALS::setALSGain(ALS_gain g)
+{
+    _regALSControl->setBits(0x1C, g);
+}
+
+void LTR559_ALS::setALSMode(ALS_mode m)
+{
+    _regALSControl->setBits(0x01, m);
+}
+
+void LTR559_ALS::setALSIntegrationTime(ALS_int_time t)
+{
+    _regALSMeasureRate->setBits(0x38, t);
+}
+
+void LTR559_ALS::setALSMeasureRate(ALS_meas_rate r)
+{
+    _regALSMeasureRate->setBits(0x07, r);
+}
+
+double LTR559_ALS::readLux()
 {
     uint16_t        alsval_ch0;
     uint16_t        alsval_ch1;

@@ -50,8 +50,8 @@ int main(void)
 
         printf("Opened bus...\n");
 
-        BME280 *    bme280 = new BME280();
-        LTR559 *    ltr559 = new LTR559();
+        BME280 *        bme280 = new BME280();
+        LTR559_ALS *    ltr559 = new LTR559_ALS();
 
         bus.attachDevice(bme280);
         bus.attachDevice(ltr559);
