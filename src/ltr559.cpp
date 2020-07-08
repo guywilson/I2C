@@ -6,6 +6,15 @@
 #include "i2c.h"
 #include "ltr559.h"
 
+LTR559_ALS::LTR559_ALS()
+{
+    ALS_int_time    t = int_t_100;
+    ALS_meas_rate   mr = mr_500;
+    ALS_gain        g = alsg_1;
+
+    LTR559_ALS(t, mr, g);
+}
+
 LTR559_ALS::LTR559_ALS(ALS_int_time t, ALS_meas_rate m, ALS_gain g) : I2CDevice(LTR559_DEVICE_NAME, LTR559_BUS_ADDRESS)
 {
     this->integrationTime = t;

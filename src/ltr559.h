@@ -77,6 +77,7 @@ enum ALS_gain {
         mr_2000 =       0b00000101
     };
 
+    LTR559_ALS();
     LTR559_ALS(ALS_int_time t, ALS_meas_rate m, ALS_gain g);
     ~LTR559_ALS();
 
@@ -93,9 +94,9 @@ enum ALS_gain {
     double          readLux();
 
 private:
-    ALS_int_time    integrationTime = int_t_100;
-    ALS_meas_rate   measurementRate = mr_500;
-    ALS_gain        gain = alsg_1;
+    ALS_int_time    integrationTime;
+    ALS_meas_rate   measurementRate;
+    ALS_gain        gain;
 };
 
 #endif
