@@ -207,6 +207,8 @@ double LTR559_ALS::readLux()
     int             ch0_c[4] = {17743,42785,5926,0};
     int             ch1_c[4] = {-11059,19548,-1185,0};
 
+    usleep((useconds_t)(getMeasurementRate() * 1000.0) + 100L);
+
     alsval_ch0 = _regALSChannel0->read();
     alsval_ch1 = _regALSChannel1->read();
 
