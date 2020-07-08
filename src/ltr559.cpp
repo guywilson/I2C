@@ -6,8 +6,12 @@
 #include "i2c.h"
 #include "ltr559.h"
 
-LTR559_ALS::LTR559_ALS() : I2CDevice(LTR559_DEVICE_NAME, LTR559_BUS_ADDRESS)
+LTR559_ALS::LTR559_ALS(ALS_int_time t, ALS_meas_rate m, ALS_gain g) : I2CDevice(LTR559_DEVICE_NAME, LTR559_BUS_ADDRESS)
 {
+    this->integrationTime = t;
+    this->measurementRate = m;
+    this->gain = g;
+
     _regALSControl = new I2CRegister8bit(this, LTR559_REG_ALSCONTROL_NAME, LTR559_REG_ALSCONTROL_ADDRESS);
     _regALSMeasureRate = new I2CRegister8bit(this, LTR559_REG_ALSMEASURERT_NAME, LTR559_REG_ALSMEASURERT_ADDRESS);
     _regALSThresholdHi = new I2CRegister16bit(this, LTR559_REG_ALSTHRESHI_NAME, LTR559_REG_ALSTHRESHI_ADDRESS);
@@ -35,25 +39,31 @@ LTR559_ALS::~LTR559_ALS()
 
 void LTR559_ALS::initialise()
 {
-    uint8_t     isResetting = 1;
+    reset();
 
-    _regALSControl->write(0x02);
+    setALSGain(gain);
 
-    while (isResetting) {
-        usleep(1000L);
-
-        isResetting = (_regALSControl->read() & 0x02);
-    }
-
-    setALSGain(alsg_4);
-
-    setALSIntegrationTime(int_t_100);
-    setALSMeasureRate(mr_100);
+    setALSIntegrationTime(integrationTime);
+    setALSMeasureRate(measurementRate);
 
     _regALSThresholdHi->write(0xFFFF);
     _regALSThresholdLo->write(0x0000);
 
     setALSMode(mode_active);
+}
+
+void LTR559_ALS::reset()
+{
+    _regALSControl->setBits(0x02, 0x02);
+
+    while (!isReset()) {
+        usleep(1000L);
+    }
+}
+
+bool LTR559_ALS::isReset()
+{
+    return ((_regALSControl->read() & 0x02) == 0);
 }
 
 void LTR559_ALS::setALSGain(ALS_gain g)
@@ -74,6 +84,113 @@ void LTR559_ALS::setALSIntegrationTime(ALS_int_time t)
 void LTR559_ALS::setALSMeasureRate(ALS_meas_rate r)
 {
     _regALSMeasureRate->setBits(0x07, r);
+}
+
+double LTR559_ALS::getIntegrationTime()
+{
+    double int_t;
+
+    switch (this->integrationTime) {
+        case int_t_50:
+            int_t = 50.0;
+            break;
+
+        case int_t_100:
+            int_t = 100.0;
+            break;
+
+        case int_t_150:
+            int_t = 150.0;
+            break;
+
+        case int_t_200:
+            int_t = 200.0;
+            break;
+
+        case int_t_250:
+            int_t = 250.0;
+            break;
+
+        case int_t_300:
+            int_t = 300.0;
+            break;
+
+        case int_t_350:
+            int_t = 350.0;
+            break;
+
+        case int_t_400:
+            int_t = 400.0;
+            break;
+    }
+
+    return int_t;
+}
+
+double LTR559_ALS::getMeasurementRate()
+{
+    double mr;
+
+    switch (this->measurementRate) {
+        case mr_50:
+            mr = 50.0;
+            break;
+
+        case mr_100:
+            mr = 100.0;
+            break;
+
+        case mr_200:
+            mr = 200.0;
+            break;
+
+        case mr_500:
+            mr = 500.0;
+            break;
+
+        case mr_1000:
+            mr = 1000.0;
+            break;
+
+        case mr_2000:
+            mr = 2000.0;
+            break;
+    }
+
+    return mr;
+}
+
+int LTR559_ALS::getGain()
+{
+    int g;
+
+    switch (this->gain) {
+        case alsg_1:
+            g = 1;
+            break;
+
+        case alsg_2:
+            g = 2;
+            break;
+
+        case alsg_4:
+            g = 4;
+            break;
+
+        case alsg_8:
+            g = 8;
+            break;
+
+        case alsg_48:
+            g = 48;
+            break;
+
+        case alsg_96:
+            g = 96;
+            break; 
+    }
+
+    return g;
 }
 
 double LTR559_ALS::readLux()
@@ -117,8 +234,8 @@ double LTR559_ALS::readLux()
     }
 
     lux = ((double)alsval_ch0 * (double)ch0_co) - ((double)alsval_ch1 * (double)ch1_co);
-    lux /= ((double)50.0 / (double)100.0);
-    lux /= (double)4.0;
+    lux /= (getIntegrationTime() / (double)100.0);
+    lux /= (double)getGain();
     lux /= (double)10000.0;
 
     //lux = (alsval_ch0 * ch0_co - alsval_ch1 * ch1_co) / 10000;

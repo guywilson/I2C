@@ -38,11 +38,12 @@ private:
     I2CRegister16bit *  _regALSChannel0;
     I2CRegister16bit *  _regALSChannel1;
 
-public:
-    LTR559_ALS();
-    ~LTR559_ALS();
+    double  getIntegrationTime();
+    double  getMeasurementRate();
+    int     getGain();
 
-    enum ALS_gain {
+public:
+enum ALS_gain {
         alsg_1 =        0b00000000,
         alsg_2 =        0b00000100,
         alsg_4 =        0b00001000,
@@ -76,7 +77,13 @@ public:
         mr_2000 =       0b00000101
     };
 
+    LTR559_ALS(ALS_int_time t, ALS_meas_rate m, ALS_gain g);
+    ~LTR559_ALS();
+
     virtual void    initialise();
+
+    void            reset();
+    bool            isReset();
 
     void            setALSGain(ALS_gain g);
     void            setALSMode(ALS_mode m);
@@ -84,6 +91,11 @@ public:
     void            setALSMeasureRate(ALS_meas_rate r);
 
     double          readLux();
+
+private:
+    ALS_int_time    integrationTime = int_t_100;
+    ALS_meas_rate   measurementRate = mr_500;
+    ALS_gain        gain = alsg_1;
 };
 
 #endif
