@@ -68,6 +68,7 @@ bool LTR559_ALS::isReset()
 
 void LTR559_ALS::setALSGain(ALS_gain g)
 {
+    this->gain = g;
     _regALSControl->setBits(0x1C, g);
 }
 
@@ -78,11 +79,13 @@ void LTR559_ALS::setALSMode(ALS_mode m)
 
 void LTR559_ALS::setALSIntegrationTime(ALS_int_time t)
 {
+    this->integrationTime = t;
     _regALSMeasureRate->setBits(0x38, t);
 }
 
 void LTR559_ALS::setALSMeasureRate(ALS_meas_rate r)
 {
+    this->measurementRate = r;
     _regALSMeasureRate->setBits(0x07, r);
 }
 
