@@ -151,6 +151,9 @@ void BME280::initialise()
     if (i == 5) {
         throw i2c_error("Could not find BME280 on the I2C bus", __FILE__, __LINE__);
     }
+    else {
+        printf("Reset BME280 after %d attempt%c\n", i, (i > 1 ? 's' : ' '));
+    }
 
     setFilterCoefficient(this->filterCoefficient);
 
