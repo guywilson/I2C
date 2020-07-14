@@ -129,6 +129,8 @@ void BME280::initialise()
     printf("Initialising BME280\n");
 
     while (i < 5) {
+        printf("Attempting device reset\n");
+        
         if (isChipIDValid()) {
             /*
             ** Reset the device...
