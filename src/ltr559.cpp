@@ -25,21 +25,27 @@ LTR559_ALS::LTR559_ALS(ALS_int_time t, ALS_meas_rate m, ALS_gain g) : I2CDevice(
     _regALSMeasureRate = new I2CRegister8bit(this, LTR559_REG_ALSMEASURERT_NAME, LTR559_REG_ALSMEASURERT_ADDRESS);
     _regALSThresholdHi = new I2CRegister16bit(this, LTR559_REG_ALSTHRESHI_NAME, LTR559_REG_ALSTHRESHI_ADDRESS);
     _regALSThresholdLo = new I2CRegister16bit(this, LTR559_REG_ALSTHRESLO_NAME, LTR559_REG_ALSTHRESLO_ADDRESS);
-    _regALSChannel0 = new I2CRegister16bit(this, LTR559_REG_ALSCHANNEL0_NAME, LTR559_REG_ALSCHANNEL0_ADDRESS);
-    _regALSChannel1 = new I2CRegister16bit(this, LTR559_REG_ALSCHANNEL1_NAME, LTR559_REG_ALSCHANNEL1_ADDRESS);
+    _regALSChannel0Lo = new I2CRegister8bit(this, LTR559_REG_ALSCHAN0_LO_NAME, LTR559_REG_ALSCHAN0_LO_ADDRESS);
+    _regALSChannel0Hi = new I2CRegister8bit(this, LTR559_REG_ALSCHAN0_HI_NAME, LTR559_REG_ALSCHAN0_HI_ADDRESS);
+    _regALSChannel1Lo = new I2CRegister8bit(this, LTR559_REG_ALSCHAN1_LO_NAME, LTR559_REG_ALSCHAN1_LO_ADDRESS);
+    _regALSChannel1Hi = new I2CRegister8bit(this, LTR559_REG_ALSCHAN1_HI_NAME, LTR559_REG_ALSCHAN1_HI_ADDRESS);
 
     addRegister(_regALSControl);
     addRegister(_regALSMeasureRate);
     addRegister(_regALSThresholdHi);
     addRegister(_regALSThresholdLo);
-    addRegister(_regALSChannel0);
-    addRegister(_regALSChannel1);
+    addRegister(_regALSChannel0Lo);
+    addRegister(_regALSChannel0Hi);
+    addRegister(_regALSChannel1Lo);
+    addRegister(_regALSChannel1Hi);
 }
 
 LTR559_ALS::~LTR559_ALS()
 {
-    delete _regALSChannel1;
-    delete _regALSChannel0;
+    delete _regALSChannel1Hi;
+    delete _regALSChannel1Lo;
+    delete _regALSChannel0Hi;
+    delete _regALSChannel0Lo;
     delete _regALSThresholdLo;
     delete _regALSThresholdHi;
     delete _regALSMeasureRate;
@@ -211,8 +217,8 @@ int LTR559_ALS::getGain()
 
 double LTR559_ALS::readLux()
 {
-    uint16_t        alsval_ch0;
-    uint16_t        alsval_ch1;
+    uint16_t        alsval_ch0 = 0x0000;
+    uint16_t        alsval_ch1 = 0x0000;
     double          lux;
     int             ch0_co;
     int             ch1_co;
@@ -222,8 +228,11 @@ double LTR559_ALS::readLux()
 
     usleep((useconds_t)(getMeasurementRate() * 1000.0) + (useconds_t)(getIntegrationTime() * 1000.0) + 100L);
 
-    alsval_ch1 = _regALSChannel1->read();
-    alsval_ch0 = _regALSChannel0->read();
+    alsval_ch1 |= _regALSChannel1Lo->read();
+    alsval_ch1 |= (_regALSChannel1Hi->read() << 8);
+
+    alsval_ch0 |= _regALSChannel0Lo->read();
+    alsval_ch0 |= (_regALSChannel0Hi->read() << 8);
 
     if ((alsval_ch0 + alsval_ch1) == 0) {
             ratio = 101;

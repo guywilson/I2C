@@ -20,11 +20,17 @@
 #define LTR559_REG_ALSTHRESHI_NAME     "ALS Threshold High"
 #define LTR559_REG_ALSTHRESHI_ADDRESS   0x97
 
-#define LTR559_REG_ALSCHANNEL0_NAME     "ALS Channel 0"
-#define LTR559_REG_ALSCHANNEL0_ADDRESS  0x8A
+#define LTR559_REG_ALSCHAN0_LO_NAME     "ALS Channel 0 Low"
+#define LTR559_REG_ALSCHAN0_LO_ADDRESS  0x8A
 
-#define LTR559_REG_ALSCHANNEL1_NAME     "ALS Channel 1"
-#define LTR559_REG_ALSCHANNEL1_ADDRESS  0x88
+#define LTR559_REG_ALSCHAN0_HI_NAME     "ALS Channel 0 High"
+#define LTR559_REG_ALSCHAN0_HI_ADDRESS  0x8B
+
+#define LTR559_REG_ALSCHAN1_LO_NAME     "ALS Channel 1 Low"
+#define LTR559_REG_ALSCHAN1_LO_ADDRESS  0x88
+
+#define LTR559_REG_ALSCHAN1_HI_NAME     "ALS Channel 1 High"
+#define LTR559_REG_ALSCHAN1_HI_ADDRESS  0x89
 
 class LTR559_ALS : public I2CDevice
 {
@@ -35,8 +41,10 @@ private:
     I2CRegister8bit *   _regALSMeasureRate;
     I2CRegister16bit *  _regALSThresholdHi;
     I2CRegister16bit *  _regALSThresholdLo;
-    I2CRegister16bit *  _regALSChannel0;
-    I2CRegister16bit *  _regALSChannel1;
+    I2CRegister8bit *   _regALSChannel0Lo;
+    I2CRegister8bit *   _regALSChannel0Hi;
+    I2CRegister8bit *   _regALSChannel1Lo;
+    I2CRegister8bit *   _regALSChannel1Hi;
 
     double  getIntegrationTime();
     double  getMeasurementRate();
