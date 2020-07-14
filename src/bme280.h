@@ -88,6 +88,8 @@ private:
     I2CRegisterBlock *              _regCompensation1;
     I2CRegisterBlock *              _regCompensation2;
 
+    BME280();
+
     double getCompensatedTemperature(int32_t adcInput);
     double getCompensatedPressure(int32_t adcInput);
     double getCompensatedHumidity(int32_t adcInput);
@@ -154,7 +156,6 @@ public:
         mode_normal
     };
 
-    BME280();
     BME280(operation_mode mode);
     BME280(power_mode mode, filter filterCoefficient, osrs_t temperatureOversampling, osrs_p pressureOversampling, osrs_h humidityOversampling);
     virtual ~BME280();
