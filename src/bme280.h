@@ -95,9 +95,6 @@ private:
     void resetDevice();
 
 public:
-    BME280();
-    virtual ~BME280();
-
     enum power_mode {
         pow_sleep =     0b00000000,
         pow_forced =    0b00000001,
@@ -149,6 +146,19 @@ public:
         filter_16 =     0b00010000
     };
 
+    enum operation_mode {
+        indoor_navigation,
+        weather_monitoring,
+        humidity_sensing,
+        gaming,
+        standard
+    };
+
+    BME280();
+    BME280(operation_mode mode);
+    BME280(power_mode mode, filter filterCoefficient, osrs_t temperatureOversampling, osrs_p pressureOversampling, osrs_h humidityOversampling);
+    virtual ~BME280();
+
     virtual void    initialise();
 
     void            setMode(power_mode mode);
@@ -163,6 +173,13 @@ public:
     bool            isMeasuring();
 
     void            getData(BME280_TPH * tph);
+
+private:
+    power_mode      powerMode;
+    filter          filterCoefficient;
+    osrs_t          temperatureOversampling;
+    osrs_p          pressureOversampling;
+    osrs_h          humidityOversampling;
 };
 
 #endif

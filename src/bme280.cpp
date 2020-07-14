@@ -7,7 +7,66 @@
 #include "i2c.h"
 #include "bme280.h"
 
-BME280::BME280() : I2CDevice(BME280_DEVICE_NAME, BME280_BUS_ADDRESS)
+BME280::BME280() : BME280(standard)
+{
+}
+
+BME280::BME280(operation_mode mode)
+{
+    power_mode m;
+
+    filter f;
+
+    osrs_h hos;
+    osrs_p pos;
+    osrs_t tos;
+
+    switch (mode) {
+        case indoor_navigation:
+            m = pow_normal;
+            f = filter_16;
+            tos = tos_2;
+            pos = pos_16;
+            hos = hos_1;
+            break;
+
+        case weather_monitoring:
+            m = pow_forced;
+            f = filter_off;
+            tos = tos_1;
+            pos = pos_1;
+            hos = hos_1;
+            break;
+
+        case humidity_sensing:
+            m = pow_forced;
+            f = filter_off;
+            tos = tos_1;
+            pos = pos_skipped;
+            hos = hos_1;
+            break;
+
+        case gaming:
+            m = pow_normal;
+            f = filter_16;
+            tos = tos_1;
+            pos = pos_4;
+            hos = hos_skipped;
+            break;
+
+        default:
+            m = pow_forced;
+            f = filter_4;
+            tos = tos_1;
+            pos = pos_1;
+            hos = hos_1;
+            break;
+    }
+
+    BME280(m, f, tos, pos, hos);
+}
+
+BME280::BME280(power_mode mode, filter filterCoefficient, osrs_t temperatureOversampling, osrs_p pressureOversampling, osrs_h humidityOversampling) : I2CDevice(BME280_DEVICE_NAME, BME280_BUS_ADDRESS)
 {
     memset(&compensationData, 0x00, sizeof(BME280_COMPENSATIONDATA));
 
@@ -30,6 +89,12 @@ BME280::BME280() : I2CDevice(BME280_DEVICE_NAME, BME280_BUS_ADDRESS)
     addRegister(_regData);
     addRegister(_regCompensation1);
     addRegister(_regCompensation2);
+
+    this->powerMode = mode;
+    this->filterCoefficient = filterCoefficient;
+    this->temperatureOversampling = temperatureOversampling;
+    this->pressureOversampling = pressureOversampling;
+    this->humidityOversampling = humidityOversampling;
 }
 
 BME280::~BME280()
@@ -87,11 +152,11 @@ void BME280::initialise()
         throw i2c_error("Could not find BME280 on the I2C bus", __FILE__, __LINE__);
     }
 
-    setFilterCoefficient(filter_4);
+    setFilterCoefficient(this->filterCoefficient);
 
-    setHumidityOversampling(hos_1);
-    setPressureOversampling(pos_1);
-    setTemperatureOversampling(tos_1);
+    setHumidityOversampling(this->humidityOversampling);
+    setPressureOversampling(this->pressureOversampling);
+    setTemperatureOversampling(this->temperatureOversampling);
 }
 
 void BME280::setMode(power_mode mode)
@@ -146,7 +211,7 @@ void BME280::getData(BME280_TPH * tph)
     int32_t                     temperature;
     int32_t                     humidity;
 
-    setMode(pow_forced);
+    setMode(this->powerMode);
 
     usleep(200000L);
 
