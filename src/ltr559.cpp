@@ -48,6 +48,8 @@ LTR559_ALS::~LTR559_ALS()
 
 void LTR559_ALS::initialise()
 {
+    printf("Initialising LTR559\n");
+
     reset();
 
     setALSGain(gain);
@@ -59,6 +61,8 @@ void LTR559_ALS::initialise()
     _regALSThresholdLo->write(0x0000);
 
     setALSMode(mode_active);
+
+    printf("Completed initialisation of LTR559\n");
 }
 
 void LTR559_ALS::reset()

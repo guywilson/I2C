@@ -157,6 +157,8 @@ void BME280::initialise()
     setHumidityOversampling(this->humidityOversampling);
     setPressureOversampling(this->pressureOversampling);
     setTemperatureOversampling(this->temperatureOversampling);
+
+    printf("Completed initialisation of BME280\n");
 }
 
 void BME280::setMode(power_mode mode)
