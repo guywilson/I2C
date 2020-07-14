@@ -117,6 +117,8 @@ void BME280::resetDevice()
     while (isNVMCopyInProgress()) {
         usleep(2000L);
     }
+
+    printf("Device has been reset\n");
 }
 
 void BME280::initialise()
