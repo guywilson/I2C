@@ -50,7 +50,7 @@ int main(void)
 
         printf("Opened bus...\n");
 
-        BME280::operation_mode opMode = BME280::mode_normal;
+        BME280::operation_mode opMode = BME280::mode_weather_monitoring;
 
         LTR559_ALS::ALS_int_time  t = LTR559_ALS::int_t_100;
         LTR559_ALS::ALS_meas_rate m = LTR559_ALS::mr_200;
