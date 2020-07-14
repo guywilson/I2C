@@ -120,8 +120,6 @@ void BME280::resetDevice()
     while (isNVMCopyInProgress()) {
         usleep(2000L);
     }
-
-    printf("Device has been reset\n");
 }
 
 void BME280::initialise()
@@ -132,8 +130,6 @@ void BME280::initialise()
     printf("Initialising BME280\n");
 
     while (i < 5) {
-        printf("Attempting device reset\n");
-
         if (isChipIDValid()) {
             /*
             ** Reset the device...
@@ -150,9 +146,6 @@ void BME280::initialise()
 
             break;
         }
-        else {
-            printf("Chip ID not valid\n");
-        }
 
         usleep(1000L);
         i++;
@@ -160,9 +153,6 @@ void BME280::initialise()
 
     if (i == 5) {
         throw i2c_error("Could not find BME280 on the I2C bus", __FILE__, __LINE__);
-    }
-    else {
-        printf("Reset BME280 after %d attempt%c\n", i, (i != 1 ? 's' : ' '));
     }
 
     setFilterCoefficient(this->filterCoefficient);
