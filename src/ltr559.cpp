@@ -68,6 +68,8 @@ void LTR559_ALS::initialise()
 
     setALSMode(mode_active);
 
+    usleep(10000L);
+    
     printf("Completed initialisation of LTR559\n");
 }
 
