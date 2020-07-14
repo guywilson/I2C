@@ -7,11 +7,32 @@
 #include "i2c.h"
 #include "bme280.h"
 
-BME280::BME280()
+BME280::BME280() : I2CDevice(BME280_DEVICE_NAME, BME280_BUS_ADDRESS)
 {
+    memset(&compensationData, 0x00, sizeof(BME280_COMPENSATIONDATA));
+
+    _regReset = new I2CRegister8bit(this, BME280_REG_RESET_NAME, BME280_REG_RESET_ADDRESS);
+    _regChipID = new I2CRegister8bit(this, BME280_REG_CHIPID_NAME, BME280_REG_CHIPID_ADDRESS);
+    _regStatus = new I2CRegister8bit(this, BME280_REG_STATUS_NAME, BME280_REG_STATUS_ADDRESS);
+    _regConfig = new I2CRegister8bit(this, BME280_REG_CONFIG_NAME, BME280_REG_CONFIG_ADDRESS);
+    _regCtrlMeasure = new I2CRegister8bit(this, BME280_REG_CTRLMEAS_NAME, BME280_REG_CTRLMEAS_ADDRESS);
+    _regCtrlHumidity = new I2CRegister8bit(this, BME280_REG_CTRLHUM_NAME, BME280_REG_CTRLHUM_ADDRESS);
+    _regData = new I2CRegisterBlock(this, BME280_REG_DATA_NAME, BME280_REG_DATA_ADDRESS);
+    _regCompensation1 = new I2CRegisterBlock(this, BME280_REG_COMP1_NAME, BME280_REG_COMP1_ADDRESS);
+    _regCompensation2 = new I2CRegisterBlock(this, BME280_REG_COMP2_NAME, BME280_REG_COMP2_ADDRESS);
+
+    addRegister(_regReset);
+    addRegister(_regChipID);
+    addRegister(_regStatus);
+    addRegister(_regConfig);
+    addRegister(_regCtrlMeasure);
+    addRegister(_regCtrlHumidity);
+    addRegister(_regData);
+    addRegister(_regCompensation1);
+    addRegister(_regCompensation2);
 }
 
-BME280::BME280(operation_mode mode) : I2CDevice(BME280_DEVICE_NAME, BME280_BUS_ADDRESS)
+BME280::BME280(operation_mode mode) : BME280()
 {
     power_mode m;
 
@@ -63,33 +84,15 @@ BME280::BME280(operation_mode mode) : I2CDevice(BME280_DEVICE_NAME, BME280_BUS_A
             break;
     }
 
-    BME280(m, f, tos, pos, hos);
+    this->powerMode = m;
+    this->filterCoefficient = f;
+    this->temperatureOversampling = tos;
+    this->pressureOversampling = pos;
+    this->humidityOversampling = hos;
 }
 
-BME280::BME280(power_mode mode, filter filterCoefficient, osrs_t temperatureOversampling, osrs_p pressureOversampling, osrs_h humidityOversampling) : I2CDevice(BME280_DEVICE_NAME, BME280_BUS_ADDRESS)
+BME280::BME280(power_mode mode, filter filterCoefficient, osrs_t temperatureOversampling, osrs_p pressureOversampling, osrs_h humidityOversampling) : BME280()
 {
-    memset(&compensationData, 0x00, sizeof(BME280_COMPENSATIONDATA));
-
-    _regReset = new I2CRegister8bit(this, BME280_REG_RESET_NAME, BME280_REG_RESET_ADDRESS);
-    _regChipID = new I2CRegister8bit(this, BME280_REG_CHIPID_NAME, BME280_REG_CHIPID_ADDRESS);
-    _regStatus = new I2CRegister8bit(this, BME280_REG_STATUS_NAME, BME280_REG_STATUS_ADDRESS);
-    _regConfig = new I2CRegister8bit(this, BME280_REG_CONFIG_NAME, BME280_REG_CONFIG_ADDRESS);
-    _regCtrlMeasure = new I2CRegister8bit(this, BME280_REG_CTRLMEAS_NAME, BME280_REG_CTRLMEAS_ADDRESS);
-    _regCtrlHumidity = new I2CRegister8bit(this, BME280_REG_CTRLHUM_NAME, BME280_REG_CTRLHUM_ADDRESS);
-    _regData = new I2CRegisterBlock(this, BME280_REG_DATA_NAME, BME280_REG_DATA_ADDRESS);
-    _regCompensation1 = new I2CRegisterBlock(this, BME280_REG_COMP1_NAME, BME280_REG_COMP1_ADDRESS);
-    _regCompensation2 = new I2CRegisterBlock(this, BME280_REG_COMP2_NAME, BME280_REG_COMP2_ADDRESS);
-
-    addRegister(_regReset);
-    addRegister(_regChipID);
-    addRegister(_regStatus);
-    addRegister(_regConfig);
-    addRegister(_regCtrlMeasure);
-    addRegister(_regCtrlHumidity);
-    addRegister(_regData);
-    addRegister(_regCompensation1);
-    addRegister(_regCompensation2);
-
     this->powerMode = mode;
     this->filterCoefficient = filterCoefficient;
     this->temperatureOversampling = temperatureOversampling;
