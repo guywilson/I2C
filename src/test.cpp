@@ -71,7 +71,7 @@ int main(void)
         double dewPoint = tph.temperature - (((double)100.0 - tph.humidity) / (double)5.0);
         double humidity = (double)100.0 - ((double)5.0 * (correctedTemperature - dewPoint));
 
-        printf("Temperature: %.2f\n", correctedTemperature);
+        printf("\nTemperature: %.2f\n", correctedTemperature);
         printf("Pressure: %.2f\n", tph.pressure);
         printf("Humidity: %.2f\n", humidity);
         printf("Light level: %.2f\n\n", lightLevel);

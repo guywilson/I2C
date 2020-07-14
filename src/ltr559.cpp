@@ -222,8 +222,8 @@ double LTR559_ALS::readLux()
 
     usleep((useconds_t)(getMeasurementRate() * 1000.0) + (useconds_t)(getIntegrationTime() * 1000.0) + 100L);
 
-    alsval_ch0 = _regALSChannel0->read();
     alsval_ch1 = _regALSChannel1->read();
+    alsval_ch0 = _regALSChannel0->read();
 
     if ((alsval_ch0 + alsval_ch1) == 0) {
             ratio = 101;
