@@ -143,6 +143,9 @@ void BME280::initialise()
 
             break;
         }
+        else {
+            printf("Chip ID not valid\n");
+        }
 
         usleep(1000L);
         i++;
