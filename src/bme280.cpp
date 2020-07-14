@@ -11,7 +11,7 @@ BME280::BME280()
 {
 }
 
-BME280::BME280(operation_mode mode)
+BME280::BME280(operation_mode mode) : I2CDevice(BME280_DEVICE_NAME, BME280_BUS_ADDRESS)
 {
     power_mode m;
 
