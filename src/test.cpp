@@ -50,11 +50,13 @@ int main(void)
 
         printf("Opened bus...\n");
 
+        BME280::operation_mode opMode = BME280::mode_normal;
+
         LTR559_ALS::ALS_int_time  t = LTR559_ALS::int_t_100;
         LTR559_ALS::ALS_meas_rate m = LTR559_ALS::mr_200;
         LTR559_ALS::ALS_gain g = LTR559_ALS::alsg_4;
 
-        BME280 *        bme280 = new BME280();
+        BME280 *        bme280 = new BME280(opMode);
         LTR559_ALS *    ltr559 = new LTR559_ALS(t, m, g);
 
         bus.attachDevice(bme280);

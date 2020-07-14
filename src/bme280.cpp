@@ -7,7 +7,7 @@
 #include "i2c.h"
 #include "bme280.h"
 
-BME280::BME280() : BME280(standard)
+BME280::BME280()
 {
 }
 
@@ -22,7 +22,7 @@ BME280::BME280(operation_mode mode)
     osrs_t tos;
 
     switch (mode) {
-        case indoor_navigation:
+        case mode_indoor_navigation:
             m = pow_normal;
             f = filter_16;
             tos = tos_2;
@@ -30,7 +30,7 @@ BME280::BME280(operation_mode mode)
             hos = hos_1;
             break;
 
-        case weather_monitoring:
+        case mode_weather_monitoring:
             m = pow_forced;
             f = filter_off;
             tos = tos_1;
@@ -38,7 +38,7 @@ BME280::BME280(operation_mode mode)
             hos = hos_1;
             break;
 
-        case humidity_sensing:
+        case mode_humidity_sensing:
             m = pow_forced;
             f = filter_off;
             tos = tos_1;
@@ -46,7 +46,7 @@ BME280::BME280(operation_mode mode)
             hos = hos_1;
             break;
 
-        case gaming:
+        case mode_gaming:
             m = pow_normal;
             f = filter_16;
             tos = tos_1;
@@ -130,7 +130,7 @@ void BME280::initialise()
 
     while (i < 5) {
         printf("Attempting device reset\n");
-        
+
         if (isChipIDValid()) {
             /*
             ** Reset the device...

@@ -147,11 +147,11 @@ public:
     };
 
     enum operation_mode {
-        indoor_navigation,
-        weather_monitoring,
-        humidity_sensing,
-        gaming,
-        standard
+        mode_indoor_navigation,
+        mode_weather_monitoring,
+        mode_humidity_sensing,
+        mode_gaming,
+        mode_normal
     };
 
     BME280();
