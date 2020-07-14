@@ -94,6 +94,7 @@ BME280::BME280(operation_mode mode) : BME280()
 BME280::BME280(power_mode mode, filter filterCoefficient, osrs_t temperatureOversampling, osrs_p pressureOversampling, osrs_h humidityOversampling) : BME280()
 {
     this->powerMode = mode;
+
     this->filterCoefficient = filterCoefficient;
     this->temperatureOversampling = temperatureOversampling;
     this->pressureOversampling = pressureOversampling;
@@ -155,11 +156,17 @@ void BME280::initialise()
         throw i2c_error("Could not find BME280 on the I2C bus", __FILE__, __LINE__);
     }
 
+    setMode(pow_sleep);
+
     setFilterCoefficient(this->filterCoefficient);
 
     setHumidityOversampling(this->humidityOversampling);
     setPressureOversampling(this->pressureOversampling);
     setTemperatureOversampling(this->temperatureOversampling);
+
+    if (this->powerMode != pow_forced) {
+        setMode(powerMode);
+    }
 
     printf("Completed initialisation of BME280\n");
 }
@@ -216,9 +223,11 @@ void BME280::getData(BME280_TPH * tph)
     int32_t                     temperature;
     int32_t                     humidity;
 
-    setMode(this->powerMode);
+    if (this->powerMode == pow_forced) {
+        setMode(pow_forced);
 
-    usleep(200000L);
+        usleep(200000L);
+    }
 
     /*
     ** Read raw temperature, pressure and humidity...
