@@ -223,7 +223,7 @@ void BME280::getData(BME280_TPH * tph)
     /*
     ** Reset the filter...
     */
-    setFilterCoefficient(filter_4);
+    setFilterCoefficient(this->filterCoefficient);
 
     /*
     ** Get raw values...
