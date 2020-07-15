@@ -20,17 +20,8 @@
 #define LTR559_REG_ALSTHRESHI_NAME     "ALS Threshold High"
 #define LTR559_REG_ALSTHRESHI_ADDRESS   0x97
 
-#define LTR559_REG_ALSCHAN0_LO_NAME     "ALS Channel 0 Low"
-#define LTR559_REG_ALSCHAN0_LO_ADDRESS  0x8A
-
-#define LTR559_REG_ALSCHAN0_HI_NAME     "ALS Channel 0 High"
-#define LTR559_REG_ALSCHAN0_HI_ADDRESS  0x8B
-
-#define LTR559_REG_ALSCHAN1_LO_NAME     "ALS Channel 1 Low"
-#define LTR559_REG_ALSCHAN1_LO_ADDRESS  0x88
-
-#define LTR559_REG_ALSCHAN1_HI_NAME     "ALS Channel 1 High"
-#define LTR559_REG_ALSCHAN1_HI_ADDRESS  0x89
+#define LTR559_REG_ALSDATA_NAME         "ALS Data"
+#define LTR559_REG_ALSDATA_ADDRESS      0x88
 
 class LTR559_ALS : public I2CDevice
 {
@@ -41,17 +32,16 @@ private:
     I2CRegister8bit *   _regALSMeasureRate;
     I2CRegister16bit *  _regALSThresholdHi;
     I2CRegister16bit *  _regALSThresholdLo;
-    I2CRegister8bit *   _regALSChannel0Lo;
-    I2CRegister8bit *   _regALSChannel0Hi;
-    I2CRegister8bit *   _regALSChannel1Lo;
-    I2CRegister8bit *   _regALSChannel1Hi;
+    I2CRegisterBlock *  _regALSData;
 
     double  getIntegrationTime();
     double  getMeasurementRate();
     int     getGain();
 
+    LTR559_ALS();
+
 public:
-enum ALS_gain {
+    enum ALS_gain {
         alsg_1 =        0b00000000,
         alsg_2 =        0b00000100,
         alsg_4 =        0b00001000,
@@ -85,7 +75,6 @@ enum ALS_gain {
         mr_2000 =       0b00000101
     };
 
-    LTR559_ALS();
     LTR559_ALS(ALS_int_time t, ALS_meas_rate m, ALS_gain g);
     ~LTR559_ALS();
 

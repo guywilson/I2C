@@ -6,46 +6,31 @@
 #include "i2c.h"
 #include "ltr559.h"
 
-LTR559_ALS::LTR559_ALS()
+LTR559_ALS::LTR559_ALS() : I2CDevice(LTR559_DEVICE_NAME, LTR559_BUS_ADDRESS)
 {
-    ALS_int_time    t = int_t_100;
-    ALS_meas_rate   mr = mr_500;
-    ALS_gain        g = alsg_1;
-
-    LTR559_ALS(t, mr, g);
-}
-
-LTR559_ALS::LTR559_ALS(ALS_int_time t, ALS_meas_rate m, ALS_gain g) : I2CDevice(LTR559_DEVICE_NAME, LTR559_BUS_ADDRESS)
-{
-    this->integrationTime = t;
-    this->measurementRate = m;
-    this->gain = g;
-
-    _regALSControl = new I2CRegister8bit(this, LTR559_REG_ALSCONTROL_NAME, LTR559_REG_ALSCONTROL_ADDRESS);
-    _regALSMeasureRate = new I2CRegister8bit(this, LTR559_REG_ALSMEASURERT_NAME, LTR559_REG_ALSMEASURERT_ADDRESS);
-    _regALSThresholdHi = new I2CRegister16bit(this, LTR559_REG_ALSTHRESHI_NAME, LTR559_REG_ALSTHRESHI_ADDRESS);
-    _regALSThresholdLo = new I2CRegister16bit(this, LTR559_REG_ALSTHRESLO_NAME, LTR559_REG_ALSTHRESLO_ADDRESS);
-    _regALSChannel0Lo = new I2CRegister8bit(this, LTR559_REG_ALSCHAN0_LO_NAME, LTR559_REG_ALSCHAN0_LO_ADDRESS);
-    _regALSChannel0Hi = new I2CRegister8bit(this, LTR559_REG_ALSCHAN0_HI_NAME, LTR559_REG_ALSCHAN0_HI_ADDRESS);
-    _regALSChannel1Lo = new I2CRegister8bit(this, LTR559_REG_ALSCHAN1_LO_NAME, LTR559_REG_ALSCHAN1_LO_ADDRESS);
-    _regALSChannel1Hi = new I2CRegister8bit(this, LTR559_REG_ALSCHAN1_HI_NAME, LTR559_REG_ALSCHAN1_HI_ADDRESS);
+    _regALSControl =        new I2CRegister8bit(this, LTR559_REG_ALSCONTROL_NAME, LTR559_REG_ALSCONTROL_ADDRESS);
+    _regALSMeasureRate =    new I2CRegister8bit(this, LTR559_REG_ALSMEASURERT_NAME, LTR559_REG_ALSMEASURERT_ADDRESS);
+    _regALSThresholdHi =    new I2CRegister16bit(this, LTR559_REG_ALSTHRESHI_NAME, LTR559_REG_ALSTHRESHI_ADDRESS);
+    _regALSThresholdLo =    new I2CRegister16bit(this, LTR559_REG_ALSTHRESLO_NAME, LTR559_REG_ALSTHRESLO_ADDRESS);
+    _regALSData =           new I2CRegisterBlock(this, LTR559_REG_ALSDATA_NAME, LTR559_REG_ALSDATA_ADDRESS);
 
     addRegister(_regALSControl);
     addRegister(_regALSMeasureRate);
     addRegister(_regALSThresholdHi);
     addRegister(_regALSThresholdLo);
-    addRegister(_regALSChannel0Lo);
-    addRegister(_regALSChannel0Hi);
-    addRegister(_regALSChannel1Lo);
-    addRegister(_regALSChannel1Hi);
+    addRegister(_regALSData);
+}
+
+LTR559_ALS::LTR559_ALS(ALS_int_time t, ALS_meas_rate m, ALS_gain g) : LTR559_ALS()
+{
+    this->integrationTime = t;
+    this->measurementRate = m;
+    this->gain = g;
 }
 
 LTR559_ALS::~LTR559_ALS()
 {
-    delete _regALSChannel1Hi;
-    delete _regALSChannel1Lo;
-    delete _regALSChannel0Hi;
-    delete _regALSChannel0Lo;
+    delete _regALSData;
     delete _regALSThresholdLo;
     delete _regALSThresholdHi;
     delete _regALSMeasureRate;
@@ -69,7 +54,7 @@ void LTR559_ALS::initialise()
     setALSMode(mode_active);
 
     usleep(10000L);
-    
+
     printf("Completed initialisation of LTR559\n");
 }
 
@@ -227,14 +212,17 @@ double LTR559_ALS::readLux()
     int             ratio;
     int             ch0_c[4] = {17743,42785,5926,0};
     int             ch1_c[4] = {-11059,19548,-1185,0};
+    uint8_t         alsData[4];
 
     usleep((useconds_t)(getMeasurementRate() * 1000.0) + (useconds_t)(getIntegrationTime() * 1000.0) + 100L);
 
-    alsval_ch1 |= _regALSChannel1Lo->read();
-    alsval_ch1 |= (_regALSChannel1Hi->read() << 8);
+    _regALSData->read(alsData, sizeof(alsData));
 
-    alsval_ch0 |= _regALSChannel0Lo->read();
-    alsval_ch0 |= (_regALSChannel0Hi->read() << 8);
+    alsval_ch1 |= alsData[0];
+    alsval_ch1 |= (alsData[1] << 8);
+
+    alsval_ch0 |= alsData[2];
+    alsval_ch0 |= (alsData[3] << 8);
 
     if ((alsval_ch0 + alsval_ch1) == 0) {
             ratio = 101;
