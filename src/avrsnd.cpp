@@ -53,8 +53,10 @@ void AVRSound::setWindowSize(uint16_t windowSize)
 
 int AVRSound::getLoudnessValue()
 {
-    uint8_t value = _regLoudness->read();
+    int value = (int)_regLoudness->read();
 
+    printf("Loudness value = %d\n", value);
+    
     return (int)value;
 }
 
