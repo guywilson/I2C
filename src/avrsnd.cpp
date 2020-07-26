@@ -41,7 +41,9 @@ void AVRSound::initialise()
 
 void AVRSound::resetDevice()
 {
+    printf("Resetting sound device...\n");
     _regReset->write(AVRSND_RESET_CMD);
+    printf("Sound device reset...\n");
 
     usleep(2000000L);
 }
@@ -56,7 +58,7 @@ int AVRSound::getLoudnessValue()
     int value = (int)_regLoudness->read();
 
     printf("Loudness value = %d\n", value);
-    
+
     return (int)value;
 }
 
