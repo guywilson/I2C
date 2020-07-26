@@ -34,7 +34,7 @@ void AVRSound::initialise()
 {
     printf("Initialising AVRSound\n");
 
-    resetDevice();
+//    resetDevice();
 
     setWindowSize(this->windowSize);
 }
