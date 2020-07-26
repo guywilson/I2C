@@ -6,7 +6,7 @@
 #define _INCL_AVRSND
 
 #define AVRSND_DEVICE_NAME              "AVRSound"
-#define AVRSND_BUS_ADDRESS              0xB0
+#define AVRSND_BUS_ADDRESS              0x18
 
 #define AVRSND_REG_WSIZE_NAME           "Window Size"        
 #define AVRSND_REG_WSIZE_ADDRESS        0xF0
