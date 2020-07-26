@@ -6,6 +6,7 @@
 #include "i2c.h"
 #include "bme280.h"
 #include "ltr559.h"
+#include "avrsnd.h"
 
 using namespace std;
 
@@ -50,34 +51,42 @@ int main(void)
 
         printf("Opened bus...\n");
 
-        BME280::operation_mode opMode = BME280::mode_weather_monitoring;
+        AVRSound * avrsnd = new AVRSound(256);
 
-        LTR559_ALS::ALS_int_time  t = LTR559_ALS::int_t_100;
-        LTR559_ALS::ALS_meas_rate m = LTR559_ALS::mr_200;
-        LTR559_ALS::ALS_gain g = LTR559_ALS::alsg_4;
+        bus.attachDevice(avrsnd);
 
-        BME280 *        bme280 = new BME280(opMode);
-        LTR559_ALS *    ltr559 = new LTR559_ALS(t, m, g);
+        printf("Sound level = %s\n", avrsnd->getLoudnessDescription());
 
-        bus.attachDevice(bme280);
-        bus.attachDevice(ltr559);
+        delete avrsnd;
+        
+        // BME280::operation_mode opMode = BME280::mode_weather_monitoring;
 
-        bme280->getData(&tph);
+        // LTR559_ALS::ALS_int_time  t = LTR559_ALS::int_t_100;
+        // LTR559_ALS::ALS_meas_rate m = LTR559_ALS::mr_200;
+        // LTR559_ALS::ALS_gain g = LTR559_ALS::alsg_4;
 
-        double lightLevel = ltr559->readLux();
+        // BME280 *        bme280 = new BME280(opMode);
+        // LTR559_ALS *    ltr559 = new LTR559_ALS(t, m, g);
 
-        double correctedTemperature = (tph.temperature - ((getCPUTemp() - tph.temperature) / TEMP_COMPENSATION_FACTOR));
+        // bus.attachDevice(bme280);
+        // bus.attachDevice(ltr559);
 
-        double dewPoint = tph.temperature - (((double)100.0 - tph.humidity) / (double)5.0);
-        double humidity = (double)100.0 - ((double)5.0 * (correctedTemperature - dewPoint));
+        // bme280->getData(&tph);
 
-        printf("\nTemperature: %.2f\n", correctedTemperature);
-        printf("Pressure: %.2f\n", tph.pressure);
-        printf("Humidity: %.2f\n", humidity);
-        printf("Light level: %.2f\n\n", lightLevel);
+        // double lightLevel = ltr559->readLux();
 
-        delete ltr559;
-        delete bme280;
+        // double correctedTemperature = (tph.temperature - ((getCPUTemp() - tph.temperature) / TEMP_COMPENSATION_FACTOR));
+
+        // double dewPoint = tph.temperature - (((double)100.0 - tph.humidity) / (double)5.0);
+        // double humidity = (double)100.0 - ((double)5.0 * (correctedTemperature - dewPoint));
+
+        // printf("\nTemperature: %.2f\n", correctedTemperature);
+        // printf("Pressure: %.2f\n", tph.pressure);
+        // printf("Humidity: %.2f\n", humidity);
+        // printf("Light level: %.2f\n\n", lightLevel);
+
+        // delete ltr559;
+        // delete bme280;
         
         bus.closeBus();
     }
