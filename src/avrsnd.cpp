@@ -36,7 +36,7 @@ void AVRSound::initialise()
 
 //    resetDevice();
 
-    setWindowSize(this->windowSize);
+//    setWindowSize(this->windowSize);
 }
 
 void AVRSound::resetDevice()
