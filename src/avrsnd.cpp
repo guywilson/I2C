@@ -18,7 +18,7 @@ AVRSound::AVRSound() : I2CDevice(AVRSND_DEVICE_NAME, AVRSND_BUS_ADDRESS)
     addRegister(_regReset);
 }
 
-AVRSound::AVRSound(uint16_t windowSize)
+AVRSound::AVRSound(uint16_t windowSize) : AVRSound()
 {
     this->windowSize = windowSize;
 }
