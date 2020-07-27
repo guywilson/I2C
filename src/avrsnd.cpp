@@ -34,9 +34,9 @@ void AVRSound::initialise()
 {
     printf("Initialising AVRSound\n");
 
-//    resetDevice();
+    resetDevice();
 
-//    setWindowSize(this->windowSize);
+    setWindowSize(this->windowSize);
 }
 
 void AVRSound::resetDevice()
@@ -64,7 +64,44 @@ int AVRSound::getLoudnessValue()
 
 const char * AVRSound::getLoudnessDescription()
 {
-    const char * desc = loudnessDesc[getLoudnessValue() / 25];
+    int             value;
+    int             index;
+    const char *    description;
 
-    return desc;
+    value = getLoudnessValue();
+
+    if (value < 10) {
+        index = 0;
+    }
+    else if (value < 30) {
+        index = 1;
+    }
+    else if (value < 60) {
+        index = 2;
+    }
+    else if (value < 90) {
+        index = 3;
+    }
+    else if (value < 110) {
+        index = 4;
+    }
+    else if (value < 140) {
+        index = 5;
+    }
+    else if (value < 170) {
+        index = 6;
+    }
+    else if (value < 200) {
+        index = 7;
+    }
+    else if (value < 220) {
+        index = 8;
+    }
+    else {
+        index = 9;
+    }
+
+    description = loudnessDesc[index];
+
+    return description;
 }
