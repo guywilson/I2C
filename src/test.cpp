@@ -84,11 +84,11 @@ int main(void)
             // printf("Light level: %.2f\n\n", lightLevel);
             printf("Sound level = %s\n", avrsnd->getLoudnessDescription());
 
-            usleep(1000000L);
+            usleep(5000000L);
 
             i++;
 
-            if (i == 60) {
+            if (i == 12) {
                 loop = false;
             }
         }
