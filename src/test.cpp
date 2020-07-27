@@ -13,6 +13,8 @@ using namespace std;
 #define TEMP_COMPENSATION_FACTOR            2.25
 #define I2C_DEVICE_NAME                     "/dev/i2c-1"
 
+bool loop = true;
+
 double getCPUTemp()
 {
     double      cpuTemp = -299.0;
@@ -42,7 +44,8 @@ double getCPUTemp()
 
 int main(void)
 {
-    BME280_TPH      tph;
+    int             i = 0;
+    //BME280_TPH      tph;
 
     I2CBus & bus = I2CBus::getInstance();
 
@@ -51,14 +54,6 @@ int main(void)
 
         printf("Opened bus...\n");
 
-        AVRSound * avrsnd = new AVRSound(256);
-
-        bus.attachDevice(avrsnd);
-
-        printf("Sound level = %s\n", avrsnd->getLoudnessDescription());
-
-        delete avrsnd;
-        
         // BME280::operation_mode opMode = BME280::mode_weather_monitoring;
 
         // LTR559_ALS::ALS_int_time  t = LTR559_ALS::int_t_100;
@@ -67,24 +62,38 @@ int main(void)
 
         // BME280 *        bme280 = new BME280(opMode);
         // LTR559_ALS *    ltr559 = new LTR559_ALS(t, m, g);
+        AVRSound * avrsnd = new AVRSound(256);
 
         // bus.attachDevice(bme280);
         // bus.attachDevice(ltr559);
+        bus.attachDevice(avrsnd);
 
-        // bme280->getData(&tph);
+        while (loop) {
+            // bme280->getData(&tph);
 
-        // double lightLevel = ltr559->readLux();
+            // double lightLevel = ltr559->readLux();
 
-        // double correctedTemperature = (tph.temperature - ((getCPUTemp() - tph.temperature) / TEMP_COMPENSATION_FACTOR));
+            // double correctedTemperature = (tph.temperature - ((getCPUTemp() - tph.temperature) / TEMP_COMPENSATION_FACTOR));
 
-        // double dewPoint = tph.temperature - (((double)100.0 - tph.humidity) / (double)5.0);
-        // double humidity = (double)100.0 - ((double)5.0 * (correctedTemperature - dewPoint));
+            // double dewPoint = tph.temperature - (((double)100.0 - tph.humidity) / (double)5.0);
+            // double humidity = (double)100.0 - ((double)5.0 * (correctedTemperature - dewPoint));
 
-        // printf("\nTemperature: %.2f\n", correctedTemperature);
-        // printf("Pressure: %.2f\n", tph.pressure);
-        // printf("Humidity: %.2f\n", humidity);
-        // printf("Light level: %.2f\n\n", lightLevel);
+            // printf("\nTemperature: %.2f\n", correctedTemperature);
+            // printf("Pressure: %.2f\n", tph.pressure);
+            // printf("Humidity: %.2f\n", humidity);
+            // printf("Light level: %.2f\n\n", lightLevel);
+            printf("Sound level = %s\n", avrsnd->getLoudnessDescription());
 
+            usleep(1000000L);
+
+            i++;
+
+            if (i == 60) {
+                loop = false;
+            }
+        }
+
+        delete avrsnd;
         // delete ltr559;
         // delete bme280;
         
