@@ -19,6 +19,16 @@
 
 #define AVRSND_RESET_CMD                0xB6
 
+#define AVRSND_THRESHOLD_SILENT         10
+#define AVRSND_THRESHOLD_VQUIET         20
+#define AVRSND_THRESHOLD_QUIET          50
+#define AVRSND_THRESHOLD_LOW            80
+#define AVRSND_THRESHOLD_MLOW           110
+#define AVRSND_THRESHOLD_MEDIUM         140
+#define AVRSND_THRESHOLD_MHIGH          170
+#define AVRSND_THRESHOLD_HIGH           200
+#define AVRSND_THRESHOLD_LOUD           220
+
 class AVRSound : public I2CDevice
 {
 private:

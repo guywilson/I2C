@@ -55,11 +55,7 @@ void AVRSound::setWindowSize(uint16_t windowSize)
 
 int AVRSound::getLoudnessValue()
 {
-    int value = (int)_regLoudness->read();
-
-    printf("Loudness value = %d\n", value);
-
-    return (int)value;
+    return (int)_regLoudness->read();
 }
 
 const char * AVRSound::getLoudnessDescription()
@@ -70,31 +66,31 @@ const char * AVRSound::getLoudnessDescription()
 
     value = getLoudnessValue();
 
-    if (value < 10) {
+    if (value < AVRSND_THRESHOLD_SILENT) {
         index = 0;
     }
-    else if (value < 30) {
+    else if (value < AVRSND_THRESHOLD_VQUIET) {
         index = 1;
     }
-    else if (value < 60) {
+    else if (value < AVRSND_THRESHOLD_QUIET) {
         index = 2;
     }
-    else if (value < 90) {
+    else if (value < AVRSND_THRESHOLD_LOW) {
         index = 3;
     }
-    else if (value < 110) {
+    else if (value < AVRSND_THRESHOLD_MLOW) {
         index = 4;
     }
-    else if (value < 140) {
+    else if (value < AVRSND_THRESHOLD_MEDIUM) {
         index = 5;
     }
-    else if (value < 170) {
+    else if (value < AVRSND_THRESHOLD_MHIGH) {
         index = 6;
     }
-    else if (value < 200) {
+    else if (value < AVRSND_THRESHOLD_HIGH) {
         index = 7;
     }
-    else if (value < 220) {
+    else if (value < AVRSND_THRESHOLD_LOUD) {
         index = 8;
     }
     else {
@@ -102,6 +98,8 @@ const char * AVRSound::getLoudnessDescription()
     }
 
     description = loudnessDesc[index];
+
+    printf("Got loudness value %d [%s]\n", value, description);
 
     return description;
 }
