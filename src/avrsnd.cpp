@@ -60,11 +60,13 @@ int AVRSound::getLoudnessValue()
 
 const char * AVRSound::getLoudnessDescription()
 {
-    int             value;
+    return getLoudnessDescription(getLoudnessValue());
+}
+
+const char * AVRSound::getLoudnessDescription(int value)
+{
     int             index;
     const char *    description;
-
-    value = getLoudnessValue();
 
     if (value < AVRSND_THRESHOLD_SILENT) {
         index = 0;

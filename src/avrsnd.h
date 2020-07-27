@@ -70,6 +70,7 @@ public:
 
     int                 getLoudnessValue();
     const char *        getLoudnessDescription();
+    const char *        getLoudnessDescription(int value);
 };
 
 #endif
